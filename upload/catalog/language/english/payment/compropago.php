@@ -11,5 +11,5 @@ $_['text_reference'] = 'El ID de control es:';
 $_['text_card_number'] = 'El número de cuenta/tarjeta asignado es único por cada orden de compra.';
 
 
-$_['entry_payment_type'] = 'Selecciona un metodo de pago.';
+$_['entry_payment_type'] = 'Pagaré en:';
 $_['button_confirm'] = 'Confirm Order';
