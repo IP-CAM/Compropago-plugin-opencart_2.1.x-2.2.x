@@ -115,16 +115,29 @@ class ControllerPaymentCompropago extends Controller {
         $json['error'] = $error;     
     }
 
-    if (isset($response['id'])){
-        $this->model_checkout_order->addOrderHistory($order_info['order_id'], $this->config->get('compropago_order_status_id'));        
-        $expiration_date = $response['exp_date'];
-        $short_id = $response['short_id'];
-        $instructions = $response['instructions'];
-        $step_1 = $instructions['step_1'];
-        $step_2 = $instructions['step_2'];
-        $step_3 = $instructions['step_3'];
-        $note_extra_comition = $instructions['note_extra_comition'];
-        $note_expiration_date = $instructions['note_expiration_date'];
+    if (isset($response['id']) || isset($response['payment_id'])){
+        $this->model_checkout_order->addOrderHistory($order_info['order_id'], $this->config->get('compropago_order_status_id'));
+
+        if($response['api_version'] != '1.0') {      
+            $expiration_date = $response['exp_date'];
+            $short_id = $response['short_id'];
+            $instructions = $response['instructions'];
+            $step_1 = $instructions['step_1'];
+            $step_2 = $instructions['step_2'];
+            $step_3 = $instructions['step_3'];
+            $note_extra_comition = $instructions['note_extra_comition'];
+            $note_expiration_date = $instructions['note_expiration_date'];
+        } else {
+            $expiration_date = $response['expiration_date'];
+            $short_id = $response['short_payment_id'];
+            $instructions = $response['payment_instructions'];
+            $step_1 = $instructions['step_1'];
+            $step_2 = $instructions['step_2'];
+            $step_3 = $instructions['step_3'];
+            $note_extra_comition = $instructions['note_extra_comition'];
+            $note_expiration_date = $instructions['note_expiration_date'];
+        }
+        
         $json['success'] = $this->url->link('payment/compropago/success', 'short_id='.$short_id.'&expiration_date='.$expiration_date.'&step_1='.$step_1.'&step_2='.$step_2.'&step_3='.$step_3.'&note_extra_comition='.$note_extra_comition.'&note_expiration_date='.$note_expiration_date , 'SSL');             
     }         
 
@@ -219,23 +232,18 @@ class ControllerPaymentCompropago extends Controller {
 
     switch ($type) {    
         case 'charge.pending':
-            print_r('pending');
             $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_id'));        
             break;
         case 'charge.success':
-            print_r('success');
             $this->model_checkout_order->addOrderHistory($order_id['order_id'], 2);        
             break;
-        case 'charge.declined':         
-            print_r('declined');
+        case 'charge.declined':    
             $this->model_checkout_order->addOrderHistory($order_id['order_id'], 8);                    
             break;
         case 'charge.deleted':
-            print_r('deleted');
             $this->model_checkout_order->addOrderHistory($order_id['order_id'], 10);        
             break;
         case 'charge.expired':
-            print_r('expired');
             $this->model_checkout_order->addOrderHistory($order_id['order_id'], 14);        
             break;              
     }           

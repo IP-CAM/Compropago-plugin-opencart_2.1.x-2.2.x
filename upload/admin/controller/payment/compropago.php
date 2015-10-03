@@ -1,265 +1,126 @@
 <?php
 class ControllerPaymentCompropago extends Controller {
+  private $error = array();
+ 
   public function index() {
-    $this->language->load('payment/compropago');    
-
-    $data['text_title'] = $this->language->get('text_title');
-    $data['entry_payment_type'] = $this->language->get('entry_payment_type');
-    $data['button_confirm'] = $this->language->get('button_confirm');
-    $data['providers'] = $this->getProviders();
-  
-    $this->load->model('checkout/order');
-    $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']); 
-
-    if ($order_info) {
-      if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago.tpl')) {
-        return $this->load->view($this->config->get('config_template') . '/template/payment/compropago.tpl', $data);
-      } else {
-        return $this->load->view('default/template/payment/compropago.tpl', $data);
-      }
-    }
-  }
-  
-  public function getProviders() {
-    $url = 'http://api-staging-compropago.herokuapp.com/v1/providers/true';    
-    $username = $this->config->get('compropago_secret_key');
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch, CURLOPT_USERPWD, $username . ":");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $this->_response = curl_exec($ch);
-    curl_close($ch);
-
-    $response = json_decode($this->_response,true);
-
-    foreach ($response as $key => $_provider){
-        if($_provider['internal_name'] == 'OXXO'){
-            $response[$key]['item_name'] = 'oxxo';
-        } else if($_provider['internal_name'] == 'SEVEN_ELEVEN'){
-            $response[$key]['item_name'] = 'seven';
-        } else if($_provider['internal_name'] == 'EXTRA'){
-            $response[$key]['item_name'] = 'extra';
-        } else if($_provider['internal_name'] == 'SORIANA'){
-            $response[$key]['item_name'] = 'soriana';
-        } else if($_provider['internal_name'] == 'CHEDRAUI'){
-            $response[$key]['item_name'] = 'chedraui';
-        } else if($_provider['internal_name'] == 'ELEKTRA'){
-            $response[$key]['item_name'] = 'elektra';
-        } else if($_provider['internal_name'] == 'FARMACIA_BENAVIDES'){
-            $response[$key]['item_name'] = 'benavides';
-        } else if($_provider['internal_name'] == 'FARMACIA_GUADALAJARA'){
-            $response[$key]['item_name'] = 'guadalajara';
-        } else if($_provider['internal_name'] == 'FARMACIA_ESQUIVAR'){
-            $response[$key]['item_name'] = 'esquivar';
-        } else if($_provider['internal_name'] == 'COPPEL'){
-            $response[$key]['item_name'] = 'coppel';
-        }   
-    }
-
-    return $response;   
-  }
-
-  public function send() {    
-    $this->load->model('checkout/order');
-
-    $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
-    $products = $this->cart->getProducts();
-
-    $order_name = '';
-
-    foreach ($products as $product) {
-        $order_name .= $product['name'];
-    }
-
-    $data = array(
-            'order_id'        => $order_info['order_id'],
-            'order_price'        => $order_info['total'],
-            'order_name'         => $order_name,
-            'customer_name'         => $order_info['payment_firstname'],
-            'customer_email'     => 'jdjd@djdj.com',
-            'payment_type'               => $this->request->post['payment-type']
-        );
-    
-    $url = 'https://api-staging-compropago.herokuapp.com/v1/charges';    
-    $username = $this->config->get('compropago_secret_key');
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch, CURLOPT_USERPWD, $username . ":");
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);        
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-    $this->_response = curl_exec($ch);
-
-    curl_close($ch);
-
-    $response = json_decode($this->_response,true);
-
-    if (isset($response)){            
-        $error = ("El servicio de Compropago no se encuentra disponible.");
-        $json['error'] = $error; 
-    }
-    
-    $json = array();
-
-    if (isset($response['type'])){
-        $error = $response['message'];
-        $json['error'] = $error;     
-    }
-
-    if (isset($response['id'])){
-        $this->model_checkout_order->addOrderHistory($order_info['order_id'], $this->config->get('compropago_order_status_id'));        
-        $expiration_date = $response['exp_date'];
-        $short_id = $response['short_id'];
-        $instructions = $response['instructions'];
-        $step_1 = $instructions['step_1'];
-        $step_2 = $instructions['step_2'];
-        $step_3 = $instructions['step_3'];
-        $note_extra_comition = $instructions['note_extra_comition'];
-        $note_expiration_date = $instructions['note_expiration_date'];
-        $json['success'] = $this->url->link('payment/compropago/success', 'short_id='.$short_id.'&expiration_date='.$expiration_date.'&step_1='.$step_1.'&step_2='.$step_2.'&step_3='.$step_3.'&note_extra_comition='.$note_extra_comition.'&note_expiration_date='.$note_expiration_date , 'SSL');             
-    }         
-
-    $this->response->addHeader('Content-Type: application/json');
-    $this->response->setOutput(json_encode($json));
-  }
-
-  public function success() {
     $this->language->load('payment/compropago');
-    $this->cart->clear();
+    $this->document->setTitle('Compropago Payment Method Configuration');
+    $this->load->model('setting/setting');
+ 
+    if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+      $this->model_setting_setting->editSetting('compropago', $this->request->post);
+      $this->session->data['success'] = $this->language->get('text_success');
+      $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
+    }
+ 
+    $data['heading_title'] = $this->language->get('heading_title');
 
-    if (!$this->request->server['HTTPS']) {
-        $data['base'] = HTTP_SERVER;
+    $data['text_edit'] = $this->language->get('text_edit');
+    $data['text_enabled'] = $this->language->get('text_enabled');
+    $data['text_disabled'] = $this->language->get('text_disabled');
+    $data['text_yes'] = $this->language->get('text_yes');
+    $data['text_no'] = $this->language->get('text_no');
+
+    $data['entry_secret_key'] = $this->language->get('entry_secret_key');
+    $data['entry_public_key'] = $this->language->get('entry_public_key');
+    
+    $data['entry_order_status'] = $this->language->get('entry_order_status');
+    $data['entry_status'] = $this->language->get('entry_status');
+    $data['entry_sort_order'] = $this->language->get('entry_sort_order');
+
+    $data['help_secret_key'] = $this->language->get('help_secret_key');
+    $data['help_public_key'] = $this->language->get('help_public_key');
+
+    $data['button_save'] = $this->language->get('text_button_save');
+    $data['button_cancel'] = $this->language->get('text_button_cancel');
+
+    if (isset($this->error['warning'])) {
+      $data['error_warning'] = $this->error['warning'];
     } else {
-        $data['base'] = HTTPS_SERVER;
+      $data['error_warning'] = '';
     }
 
-    $data['short_id'] = $this->request->get['amp;short_id'];
-    $data['expiration_date'] = $this->request->get['amp;expiration_date'];
-    $data['step_1'] = $this->request->get['amp;step_1'];
-    $data['step_2'] = $this->request->get['amp;step_2'];
-    $data['step_3'] = $this->request->get['amp;step_3'];
-    $data['note_extra_comition'] = $this->request->get['amp;note_extra_comition'];
-    $data['note_expiration_date'] = $this->request->get['amp;note_expiration_date'];
+    if (isset($this->error['secret_key'])) {
+      $data['error_secret_key'] = $this->error['secret_key'];
+    } else {
+      $data['error_secret_key'] = '';
+    }
+
+    if (isset($this->error['public_key'])) {
+      $data['error_public_key'] = $this->error['public_key'];
+    } else {
+      $data['error_public_key'] = '';
+    }
 
     $data['breadcrumbs'] = array();
 
     $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_home'),
-        'href' => $this->url->link('common/home')
+      'text' => $this->language->get('text_home'),
+      'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'SSL')
     );
 
     $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_basket'),
-        'href' => $this->url->link('checkout/cart')
+      'text' => $this->language->get('text_payment'),
+      'href' => $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL')
     );
 
     $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_checkout'),
-        'href' => $this->url->link('checkout/checkout', '', 'SSL')
+      'text' => $this->language->get('heading_title'),
+      'href' => $this->url->link('payment/compropago', 'token=' . $this->session->data['token'], 'SSL')
     );
 
-    $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_success'),
-        'href' => $this->url->link('checkout/success')
-    );
-
-    $data['text_success_title'] = $this->language->get('text_success_title');
-    $data['text_date_expiration'] = $this->language->get('text_date_expiration');
-    $data['text_instructions'] = $this->language->get('text_instructions');
-    $data['text_comitions'] = $this->language->get('text_comitions');
-    $data['text_warning'] = $this->language->get('text_warning');
-    $data['text_reference'] = $this->language->get('text_reference');
-    $data['text_card_number'] = $this->language->get('text_card_number');
-    
-    $data['language'] = $this->language->get('code');
-    $data['button_continue'] = $this->language->get('button_continue');
-    $data['continue'] = $this->url->link('common/home');
-
-    $data['column_left'] = $this->load->controller('common/column_left');
-    $data['column_right'] = $this->load->controller('common/column_right');
-    $data['content_top'] = $this->load->controller('common/content_top');
-    $data['content_bottom'] = $this->load->controller('common/content_bottom');
-    $data['footer'] = $this->load->controller('common/footer');
-    $data['header'] = $this->load->controller('common/header');
-
-    if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago_success.tpl')) {
-        $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/compropago_success.tpl', $data));
+    $data['action'] = $this->url->link('payment/compropago', 'token=' . $this->session->data['token'], 'SSL');
+    $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
+ 
+    if (isset($this->request->post['compropago_secret_key'])) {
+      $data['compropago_secret_key'] = $this->request->post['compropago_secret_key'];
     } else {
-        $this->response->setOutput($this->load->view('default/template/payment/compropago_success.tpl', $data));
+      $data['compropago_secret_key'] = $this->config->get('compropago_secret_key');
     }
-  }
-
-  public function webhook() {
-    $body = @file_get_contents('php://input');
-    $event_json = json_decode($body);
-    $this->load->model('checkout/order');
-
-    if ($event_json->{'api_version'} === '1.1') {
-        if ($event_json->{'id'}){
-            $order = $this->verifyOrder($event_json->{'id'});   
-        }
+        
+    if (isset($this->request->post['compropago_public_key'])) {
+      $data['compropago_public_key'] = $this->request->post['compropago_public_key'];
     } else {
-        if ($event_json->data->object->{'id'}){
-            $order = $this->verifyOrder($event_json->data->object->{'id'});    
-                          
-        }
-    }       
-    
-    $order_id = $this->model_checkout_order->getOrder($order['order_info']['order_id']);  
-    $type = $order['type'];
+      $data['compropago_public_key'] = $this->config->get('compropago_public_key');
+    }          
+        
+    if (isset($this->request->post['compropago_order_status_id'])) {
+      $data['compropago_order_status_id'] = $this->request->post['compropago_order_status_id'];
+    } else {
+      $data['compropago_order_status_id'] = $this->config->get('compropago_order_status_id');
+    }
 
-    switch ($type) {    
-        case 'charge.pending':
-            print_r('pending');
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_id'));        
-            break;
-        case 'charge.success':
-            print_r('success');
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], 2);        
-            break;
-        case 'charge.declined':         
-            print_r('declined');
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], 8);                    
-            break;
-        case 'charge.deleted':
-            print_r('deleted');
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], 10);        
-            break;
-        case 'charge.expired':
-            print_r('expired');
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], 14);        
-            break;              
-    }           
+    if (isset($this->request->post['compropago_sort_order'])) {
+      $data['compropago_sort_order'] = $this->request->post['compropago_sort_order'];
+    } else {
+      $data['compropago_sort_order'] = $this->config->get('compropago_sort_order');
+    }
+
+    if (isset($this->request->post['compropago_status'])) {
+      $data['compropago_status'] = $this->request->post['compropago_status'];
+    } else {
+      $data['compropago_status'] = $this->config->get('compropago_status');
+    }
+ 
+    $this->load->model('localisation/order_status');
+    $data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+
+    $data['header'] = $this->load->controller('common/header');
+    $data['column_left'] = $this->load->controller('common/column_left');
+    $data['footer'] = $this->load->controller('common/footer');
+ 
+    $this->response->setOutput($this->load->view('payment/compropago.tpl', $data));
   }
 
-  public function verifyOrder($id){
-    $url = 'https://api-staging-compropago.herokuapp.com/v1/charges/';
-    $url .=  $id;   
-    $username = $this->config->get('compropago_secret_key');
+  private function validate() {
+    if (!$this->request->post['compropago_secret_key']) {
+      $this->error['secret_key'] = $this->language->get('error_secret_key');
+    }
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch, CURLOPT_USERPWD, $username . ":");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);        
+    if (!$this->request->post['compropago_public_key']) {
+      $this->error['public_key'] = $this->language->get('error_public_key');
+    }
 
-    $this->_response = curl_exec($ch);
-
-    curl_close($ch);
-
-    $response = json_decode($this->_response,true);
-
-    return $response;
-  } 
+    return !$this->error;
+  }
 }
-?>
