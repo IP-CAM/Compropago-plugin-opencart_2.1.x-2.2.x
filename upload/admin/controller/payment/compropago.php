@@ -88,7 +88,7 @@ class ControllerPaymentCompropago extends Controller {
       $data['compropago_order_status_id'] = $this->request->post['compropago_order_status_id'];
     } else {
       $data['compropago_order_status_id'] = $this->config->get('compropago_order_status_id');
-    }
+    } 
 
     if (isset($this->request->post['compropago_sort_order'])) {
       $data['compropago_sort_order'] = $this->request->post['compropago_sort_order'];
