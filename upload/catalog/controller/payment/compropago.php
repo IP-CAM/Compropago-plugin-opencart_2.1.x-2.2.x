@@ -216,54 +216,59 @@ class ControllerPaymentCompropago extends Controller {
     $event_json = json_decode($body);
     $this->load->model('checkout/order');
 
-    if ($event_json->{'api_version'} === '1.1') {
-        if ($event_json->{'id'}){
-            $order = $this->verifyOrder($event_json->{'id'});  
-            if (isset($order['id'])){
-                if ($order['id'] === $event_json->{'id'}) {
-                    $order_id = $this->model_checkout_order->getOrder($order['order_info']['order_id']);  
+    if(isset($event_json)){
+        if ($event_json->{'api_version'} === '1.1') {
+            if ($event_json->{'id'}){
+                $order = $this->verifyOrder($event_json->{'id'});  
+                if (isset($order['id'])){
+                    if ($order['id'] === $event_json->{'id'}) {
+                        $order_id = $this->model_checkout_order->getOrder($order['order_info']['order_id']);  
+                    } else {
+                        echo 'Order not valid';
+                    }
                 } else {
                     echo 'Order not valid';
                 }
-            } else {
-                echo 'Order not valid';
             }
-        }
-    } else {
-        if ($event_json->data->object->{'id'}){
-            $order = $this->verifyOrder($event_json->data->object->{'id'});  
-            if (isset($order['data']['object']['id'])){
-                if ($order['data']['object']['id'] === $event_json->data->object->{'id'}) {
-                    $order_id = $this->model_checkout_order->getOrder($order['data']['object']['payment_details']['product_id']);  
+        } else {
+            if ($event_json->data->object->{'id'}){
+                $order = $this->verifyOrder($event_json->data->object->{'id'});  
+                if (isset($order['data']['object']['id'])){
+                    if ($order['data']['object']['id'] === $event_json->data->object->{'id'}) {
+                        $order_id = $this->model_checkout_order->getOrder($order['data']['object']['payment_details']['product_id']);  
+                    } else {
+                        echo 'Order not valid';
+                    }
                 } else {
                     echo 'Order not valid';
                 }
-            } else {
-                echo 'Order not valid';
+                              
             }
-                          
-        }
-    }           
-    
-    $type = $order['type'];
+        }  
 
-    switch ($type) {    
-        case 'charge.pending':
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_new_id'));        
-            break;
-        case 'charge.success':
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_approve_id'));        
-            break;
-        case 'charge.declined':    
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_declined_id'));                    
-            break;
-        case 'charge.deleted':
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));        
-            break;
-        case 'charge.expired':
-            $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));        
-            break;              
-    }           
+        $type = $order['type'];
+
+        switch ($type) {    
+            case 'charge.pending':
+                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_new_id'));        
+                break;
+            case 'charge.success':
+                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_approve_id'));        
+                break;
+            case 'charge.declined':    
+                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_declined_id'));                    
+                break;
+            case 'charge.deleted':
+                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));        
+                break;
+            case 'charge.expired':
+                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));        
+                break;              
+        } 
+    } else {
+        echo 'Order not valid';
+    }         
+              
   }
 
   public function verifyOrder($id){
