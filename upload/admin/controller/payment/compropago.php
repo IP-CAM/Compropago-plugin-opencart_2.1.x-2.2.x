@@ -24,7 +24,11 @@ class ControllerPaymentCompropago extends Controller {
     $data['entry_secret_key'] = $this->language->get('entry_secret_key');
     $data['entry_public_key'] = $this->language->get('entry_public_key');
     
-    $data['entry_order_status'] = $this->language->get('entry_order_status');
+    $data['entry_order_status_new'] = $this->language->get('entry_order_status_new');
+    $data['entry_order_status_pending'] = $this->language->get('entry_order_status_pending');
+    $data['entry_order_status_approve'] = $this->language->get('entry_order_status_approve');
+    $data['entry_order_status_declined'] = $this->language->get('entry_order_status_declined');
+    $data['entry_order_status_cancel'] = $this->language->get('entry_order_status_cancel');
     $data['entry_status'] = $this->language->get('entry_status');
     $data['entry_sort_order'] = $this->language->get('entry_sort_order');
 
@@ -84,11 +88,35 @@ class ControllerPaymentCompropago extends Controller {
       $data['compropago_public_key'] = $this->config->get('compropago_public_key');
     }          
         
-    if (isset($this->request->post['compropago_order_status_id'])) {
-      $data['compropago_order_status_id'] = $this->request->post['compropago_order_status_id'];
+    if (isset($this->request->post['compropago_order_status_new_id'])) {
+      $data['compropago_order_status_new_id'] = $this->request->post['compropago_order_status_new_id'];
     } else {
-      $data['compropago_order_status_id'] = $this->config->get('compropago_order_status_id');
-    } 
+      $data['compropago_order_status_new_id'] = $this->config->get('compropago_order_status_new_id');
+    }
+
+    if (isset($this->request->post['compropago_order_status_approve_id'])) {
+      $data['compropago_order_status_approve_id'] = $this->request->post['compropago_order_status_approve_id'];
+    } else {
+      $data['compropago_order_status_approve_id'] = $this->config->get('compropago_order_status_approve_id');
+    }
+
+    if (isset($this->request->post['compropago_order_status_pending_id'])) {
+      $data['compropago_order_status_pending_id'] = $this->request->post['compropago_order_status_pending_id'];
+    } else {
+      $data['compropago_order_status_pending_id'] = $this->config->get('compropago_order_status_pending_id');
+    }
+
+    if (isset($this->request->post['compropago_order_status_declined_id'])) {
+      $data['compropago_order_status_declined_id'] = $this->request->post['compropago_order_status_declined_id'];
+    } else {
+      $data['compropago_order_status_declined_id'] = $this->config->get('compropago_order_status_declined_id');
+    }
+
+    if (isset($this->request->post['compropago_order_status_cancel_id'])) {
+      $data['compropago_order_status_cancel_id'] = $this->request->post['compropago_order_status_cancel_id'];
+    } else {
+      $data['compropago_order_status_cancel_id'] = $this->config->get('compropago_order_status_cancel_id');
+    }
 
     if (isset($this->request->post['compropago_sort_order'])) {
       $data['compropago_sort_order'] = $this->request->post['compropago_sort_order'];

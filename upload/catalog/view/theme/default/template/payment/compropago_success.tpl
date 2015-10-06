@@ -13,32 +13,32 @@
     <div id="content" class="<?php echo $class; ?>"><?php echo $content_top; ?>
       <h3><?php echo $text_success_title; ?></h3>      
       <div class="cp-instruction-section">
-	    <div class="expiration-date">
-	       	<?php echo $text_date_expiration; ?>
-	    	<span><?php echo date('d-m-Y', strtotime($expiration_date));  ?></span>
-	    </div>
-	    <div class="cp-title"><?php echo $text_instructions; ?></div>
-	    <div class="cp-step-box">
-	        <div class="cp-step">
-	            <div class="cp-num">1.</div> <span> <?php echo $step_1; ?></span>
-	        </div>
-	        <div class="cp-step">
-	              <div class="cp-num">2.</div> <span> <?php echo $step_2; ?></span>
-	        </div>
-	        <div class="cp-step">
-	            <div class="cp-num">3.</div> <span> <?php echo $step_3; ?></span>
-	        </div>
-	    </div>
-	    <hr class="cp-grey">
-	    <span class="cp-note" style="font-size:12px;color: #333;"><?php echo $text_comitions; ?></span>
-	    <div class="cp-warning-box">
+      <div class="expiration-date">
+          <?php echo $text_date_expiration; ?>
+        <span><?php echo date('d-m-Y', strtotime($expiration_date));  ?></span>
+      </div>
+      <div class="cp-title"><?php echo $text_instructions; ?></div>
+      <div class="cp-step-box">
+          <div class="cp-step">
+              <div class="cp-num">1.</div> <span> <?php echo $step_1; ?></span>
+          </div>
+          <div class="cp-step">
+                <div class="cp-num">2.</div> <span> <?php echo $step_2; ?></span>
+          </div>
+          <div class="cp-step">
+              <div class="cp-num">3.</div> <span> <?php echo $step_3; ?></span>
+          </div>
+      </div>
+      <hr class="cp-grey">
+      <span class="cp-note" style="font-size:12px;color: #333;"><?php echo $text_comitions; ?></span>
+      <div class="cp-warning-box">
         <img src="catalog/view/theme/default/image/warning.png" style="margin: -7px 0px 0px 0px;"> 
         <span style="font-size: 12px;"><b><?php echo $text_warning ?></b></span>
         <ul style="" class="cp-warning">
-	        <li><?php echo $text_reference ?> <b><?php echo $short_id ?></b></li>
-	       	<li><?php echo $text_card_number ?></li>
-	        <li><?php echo $note_extra_comition; ?></li>
-	        <li><?php echo $note_expiration_date; ?></li>
+          <li><?php echo $text_reference ?> <b><?php echo $short_id ?></b></li>
+          <li><?php echo $text_card_number ?></li>
+          <li><?php echo $note_extra_comition; ?></li>
+          <li><?php echo $note_expiration_date; ?></li>
         </ul>
       </div>   
       <div class="buttons">        

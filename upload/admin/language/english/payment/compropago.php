@@ -11,7 +11,11 @@ $_['text_compropago'] = '<a href="http://www.compropago.com/documentacion/plugin
 $_['entry_secret_key'] = 'Secret Key';
 $_['entry_public_key'] = 'Public Key';
 $_['entry_status'] = 'Status:';
-$_['entry_order_status'] = 'Order Status:';
+$_['entry_order_status_new'] = 'New Order Status:';
+$_['entry_order_status_approve'] = 'Approve Order Status:';
+$_['entry_order_status_pending'] = 'Pending Order Status:';
+$_['entry_order_status_declined'] = 'Declined Order Status:';
+$_['entry_order_status_cancel'] = 'Cancel or Expired Order Status:';
 $_['entry_sort_order']	= 'Sort Order';
 
 // Help
@@ -19,7 +23,7 @@ $_['help_secret_key'] = 'The private key you get in the settings option the Comp
 $_['help_public_key'] = 'The public key you get in the settings option the ComproPago platform. www.compropago.com';
 
 // Error
-$_['error_secret_key'] = 'Secret Key Required';
+$_['error_secret_key'] = 'Secret Key Required!';
 $_['error_public_key'] = 'Public Key Required!';
 
  

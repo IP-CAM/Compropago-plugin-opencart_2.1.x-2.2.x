@@ -21,7 +21,7 @@ class ControllerPaymentCompropago extends Controller {
   }
   
   public function getProviders() {
-    $url = 'http://api-staging-compropago.herokuapp.com/v1/providers/true';    
+    $url = 'http://api-compropago.herokuapp.com/v1/providers/true';    
     $username = $this->config->get('compropago_secret_key');
 
     $ch = curl_init();
@@ -80,11 +80,11 @@ class ControllerPaymentCompropago extends Controller {
             'order_price'        => $order_info['total'],
             'order_name'         => $order_name,
             'customer_name'         => $order_info['payment_firstname'],
-            'customer_email'     => 'jdjd@djdj.com',
+            'customer_email'     => $order_info['email'],
             'payment_type'               => $this->request->post['payment-type']
         );
     
-    $url = 'https://api-staging-compropago.herokuapp.com/v1/charges';    
+    $url = 'https://api-compropago.herokuapp.com/v1/charges';    
     $username = $this->config->get('compropago_secret_key');
 
     $ch = curl_init();
@@ -267,7 +267,7 @@ class ControllerPaymentCompropago extends Controller {
   }
 
   public function verifyOrder($id){
-    $url = 'https://api-staging-compropago.herokuapp.com/v1/charges/';
+    $url = 'https://api-compropago.herokuapp.com/v1/charges/';
     $url .=  $id;   
     $username = $this->config->get('compropago_secret_key');
 
