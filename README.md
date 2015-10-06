@@ -26,7 +26,7 @@ Una vez que el cliente genero su intención de pago, dentro del panel de control
 <a name="setup"></a>
 ## Configurar ComproPago
 
-1. Para iniciar la configuración ir a **System > Configuration > Sales > Payment Methods**. Seleccionar **ComproPago**.
+1. Para iniciar la configuración ir a **Extensions > Payments**. Seleccionar **Compropago Payment Method**.
 
 2. Agregar la **llave privada** y **llave pública**, esta se puede encontrar en el apartado de configuración dentro del panel de control de ComproPago. [https://compropago.com/panel/configuracion](https://compropago.com/panel/configuracion)
 
