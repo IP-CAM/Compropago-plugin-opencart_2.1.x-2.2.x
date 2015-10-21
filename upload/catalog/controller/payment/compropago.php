@@ -115,6 +115,7 @@ class ControllerPaymentCompropago extends Controller {
         $json['error'] = $error;     
     }
 
+
     if (isset($response['id']) || isset($response['payment_id'])){
         $this->model_checkout_order->addOrderHistory($order_info['order_id'], $this->config->get('compropago_order_status_new_id'));
 
@@ -138,7 +139,7 @@ class ControllerPaymentCompropago extends Controller {
             $note_expiration_date = $instructions['note_expiration_date'];
         }
         
-        $json['success'] = $this->url->link('payment/compropago/success', 'short_id='.$short_id.'&expiration_date='.$expiration_date.'&step_1='.$step_1.'&step_2='.$step_2.'&step_3='.$step_3.'&note_extra_comition='.$note_extra_comition.'&note_expiration_date='.$note_expiration_date , 'SSL');             
+        $json['success'] = htmlspecialchars_decode($this->url->link('payment/compropago/success', 'short_id='.$short_id.'&expiration_date='.$expiration_date.'&step_1='.$step_1.'&step_2='.$step_2.'&step_3='.$step_3.'&note_extra_comition='.$note_extra_comition.'&note_expiration_date='.$note_expiration_date , 'SSL'));             
     }         
 
     $this->response->addHeader('Content-Type: application/json');
@@ -153,15 +154,15 @@ class ControllerPaymentCompropago extends Controller {
         $data['base'] = HTTP_SERVER;
     } else {
         $data['base'] = HTTPS_SERVER;
-    }
-
-    $data['short_id'] = $this->request->get['amp;short_id'];
-    $data['expiration_date'] = $this->request->get['amp;expiration_date'];
-    $data['step_1'] = $this->request->get['amp;step_1'];
-    $data['step_2'] = $this->request->get['amp;step_2'];
-    $data['step_3'] = $this->request->get['amp;step_3'];
-    $data['note_extra_comition'] = $this->request->get['amp;note_extra_comition'];
-    $data['note_expiration_date'] = $this->request->get['amp;note_expiration_date'];
+    }    
+    
+    $data['short_id'] = $this->request->get['short_id'];
+    $data['expiration_date'] = $this->request->get['expiration_date'];
+    $data['step_1'] = $this->request->get['step_1'];
+    $data['step_2'] = $this->request->get['step_2'];
+    $data['step_3'] = $this->request->get['step_3'];
+    $data['note_extra_comition'] = $this->request->get['note_extra_comition'];
+    $data['note_expiration_date'] = $this->request->get['note_expiration_date'];
 
     $data['breadcrumbs'] = array();
 
@@ -267,8 +268,7 @@ class ControllerPaymentCompropago extends Controller {
         } 
     } else {
         echo 'Order not valid';
-    }         
-              
+    }                       
   }
 
   public function verifyOrder($id){
