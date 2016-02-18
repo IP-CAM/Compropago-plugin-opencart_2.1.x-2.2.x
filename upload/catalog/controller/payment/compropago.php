@@ -274,17 +274,17 @@ class ControllerPaymentCompropago extends Controller
                 echo "Compropago is not enabled.";
             }
 
+            //api normalization
+            if($jsonObj->api_version=='1.0'){
+                $jsonObj->id=$jsonObj->data->object->id;
+                $jsonObj->short_id=$jsonObj->data->object->short_id;
+            }
+
+
             //webhook Test?
             if($jsonObj->id=="ch_00000-000-0000-000000" || $jsonObj->short_id =="000000"){
                 echo "Probando el WebHook?, <b>Ruta correcta.</b>";
             }else{
-                //api normalization
-                if($jsonObj->api_version=='1.0'){
-                    $jsonObj->id=$jsonObj->data->object->id;
-                    $jsonObj->short_id=$jsonObj->data->object->short_id;
-                }
-
-
                 try{
                     $response  = $compropagoService->verifyOrder($jsonObj->id);
 
@@ -463,10 +463,5 @@ class ControllerPaymentCompropago extends Controller
     public function verifyOrder($id)
     {
         return $this->compropagoService->verifyOrder($id);
-    }
-
-    public function __prueba()
-    {
-        echo "hola";
     }
 }

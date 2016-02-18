@@ -1,4 +1,22 @@
-# Plugin para OpenCart 2.0.1.1, 2.1.x
+> ## Si llego buscando el archivo de instalación para su tienda [Descargue la última versión dando click Aquí] [compropago-3-0-x]
+
+
+# Plugin para OpenCart 2.1.x
+===================================
+## Descripción
+Este modulo provee el servicio de ComproPago para poder generar intenciones de pago dentro de la plataforma Opencart.
+
+Con ComproPago puede recibir pagos en OXXO, 7Eleven y muchas tiendas más en todo México.
+
+[Registrarse en ComproPago ](https://compropago.com)
+
+
+## Ayuda y Soporte de ComproPago
+
+- [Centro de ayuda y soporte](https://compropago.com/ayuda-y-soporte)
+- [Solicitar Integración](https://compropago.com/integracion)
+- [Guía para Empezar a usar ComproPago](https://compropago.com/ayuda-y-soporte/como-comenzar-a-usar-compropago)
+- [Información de Contacto](https://compropago.com/contacto)
 
 Este modulo provee el servicio de ComproPago para poder generar intensiones de pago dentro de la plataforma Magento.
 
@@ -8,7 +26,7 @@ Este modulo provee el servicio de ComproPago para poder generar intensiones de p
 * [Sincronización con los webhooks](#webhook)
 
 ## Requerimientos
-* [Opencart 2.0.1.1 +](https://www.woothemes.com/woocommerce/)
+* [Opencart 2.1.x +](https://www.woothemes.com/woocommerce/)
 * [PHP >= 5.4](http://www.php.net/)
 * [PHP JSON extension](http://php.net/manual/en/book.json.php)
 * [PHP cURL extension](http://php.net/manual/en/book.curl.php)
@@ -59,3 +77,5 @@ Una vez que el cliente genero su intención de pago, dentro del panel de control
 ---
 
 Una vez completado estos pasos el proceso de instalación queda completado.
+
+[compropago-3-0-x]: https://s3.amazonaws.com/compropago/plugins/opencart/opencart-oc-2-0-0.zip
