@@ -78,4 +78,25 @@ Una vez que el cliente genero su intención de pago, dentro del panel de control
 
 Una vez completado estos pasos el proceso de instalación queda completado.
 
+## Documentación
+### Documentación ComproPago Plugin WooCommerce
+
+### Documentación de ComproPago
+**[API de ComproPago] (https://compropago.com/documentacion/api)**
+
+ComproPago te ofrece un API tipo REST para integrar pagos en efectivo en tu comercio electrónico o tus aplicaciones.
+
+
+**[General] (https://compropago.com/documentacion)**
+
+Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad que proporciona ComproPAgo
+
+
+**[Herramientas] (https://compropago.com/documentacion/boton-pago)**
+* Botón de pago
+* Modo de pruebas/activo
+* WebHooks
+* Librerías y Plugins
+* Shopify
+
 [compropago-3-0-x]: https://s3.amazonaws.com/compropago/plugins/opencart/opencart-oc-2-0-0.zip
