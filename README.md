@@ -79,7 +79,7 @@ Una vez que el cliente genero su intención de pago, dentro del panel de control
 Una vez completado estos pasos el proceso de instalación queda completado.
 
 ## Documentación
-### Documentación ComproPago Plugin WooCommerce
+### Documentación ComproPago Plugin Opencart
 
 ### Documentación de ComproPago
 **[API de ComproPago] (https://compropago.com/documentacion/api)**
