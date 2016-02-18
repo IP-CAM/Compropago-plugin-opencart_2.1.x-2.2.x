@@ -1,5 +1,6 @@
 <?php
-class ModelPaymentCompropago extends Model {
+class ModelPaymentCompropago extends Model
+{
   public function getMethod($address, $total) {
     $this->load->language('payment/compropago');
   

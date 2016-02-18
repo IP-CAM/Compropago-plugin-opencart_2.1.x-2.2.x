@@ -1,4 +1,4 @@
-#Plugin para OpenCart 2.0.1.1, 2.0.3
+# Plugin para OpenCart 2.0.1.1, 2.1.x
 
 Este modulo provee el servicio de ComproPago para poder generar intensiones de pago dentro de la plataforma Magento.
 
@@ -7,11 +7,33 @@ Este modulo provee el servicio de ComproPago para poder generar intensiones de p
 * [Configuración](#setup)
 * [Sincronización con los webhooks](#webhook)
 
+## Requerimientos
+* [Opencart 2.0.1.1 +](https://www.woothemes.com/woocommerce/)
+* [PHP >= 5.4](http://www.php.net/)
+* [PHP JSON extension](http://php.net/manual/en/book.json.php)
+* [PHP cURL extension](http://php.net/manual/en/book.curl.php)
 
 <a name="install"></a>
 ## Instalación:
 
 1. Copiar los directorios **admin** y **catalog** en el mismo orden, en directorio raiz de OpenCart. Asegurate de mantener la estructura en los directorios.
+
+2. Copiar la carpeta vendor dentro de la raiz de opencart al nivel de las carpetas **admin** y **catalog** junto los archivos composer.json y composer.lock al mismo nivel.
+
+3. Ingresar en el panel de admistración a **Extensions > Payments** y dar click en el boton install de **Compropago Payment Method**.
+
+---
+<a name="setup"></a>
+## Configurar ComproPago
+
+1. Para iniciar la configuración ir a **Extensions > Payments**. Dar click en el boton editar de **Compropago Payment Method**.
+
+2. Dentro de la pestaña **Plugin Configurations** cambiar **Status** a 'Enabled', ingresar las **Claves Publica y Privada** ( Si no conoce sus claves puede verificarlas dentro del panel de administracion de su cuenta en Compropago [https://compropago.com/panel/configuracion](https://compropago.com/panel/configuracion) ), Seleccionar el modo correspondiente a Pruebas o activo. El campo **Sort Order** indicara el lugar en el cual se mostrara Compropago como metodo de pago al realizar una compra, si desa que Compropago sea su metodo de pago por defecto indique **Sort Order** = 1.
+
+3. Dentro de la pestaña **Display Configurations** puede indicar la manera en la cual se mostrara la seleccion de proveedores para realización del pago.
+Para mostrar u ocultar los logos de proveedores modifique el campo **Show Logo**, puede tambien agragar una pequeña descripción del apartado con el campo **Description Service**, y por ultimo puede tambien agregar las instrucciones que desee pertinentes para la selección del proveedor en el apartado **Instructions**
+
+4. Dentro de la pestaña **Estatus Configurations** establecer **New Order status** = Processing y **Approve Order Status** = Processed.
 
 ---
 <a name="howto"></a>
@@ -22,13 +44,6 @@ Una vez que el cliente completa su orden de compra iniciara el proceso para gene
 
 Una vez que el cliente genero su intención de pago, dentro del panel de control de ComproPago la orden se muestra como "PENDIENTE" esto significa que el usuario esta por ir a hacer el deposito.
 
----
-<a name="setup"></a>
-## Configurar ComproPago
-
-1. Para iniciar la configuración ir a **Extensions > Payments**. Seleccionar **Compropago Payment Method**.
-
-2. Agregar la **llave privada** y **llave pública**, esta se puede encontrar en el apartado de configuración dentro del panel de control de ComproPago. [https://compropago.com/panel/configuracion](https://compropago.com/panel/configuracion)
 
 ---
 
@@ -37,11 +52,9 @@ Una vez que el cliente genero su intención de pago, dentro del panel de control
 
 1. Ir al area de **Webhooks** en ComproPago [https://compropago.com/panel/webhooks](https://compropago.com/panel/webhooks)
 
-2. Introducir la dirección: ***[direcciondetusitio.com]***/index.php?route=payment/webhook
-   Para el caso en donde exista un idioma instalado la dirección deberia ser: ***[direcciondetusitio.com]***/index.php?route=payment/webhook
+2. Introducir la dirección: ***[direcciondetusitio.com]***/index.php?route=payment/compropago/webhook y dar click en el boton **Agregar URL**
 
-
-3. Dar click en el botón "Probar" y verificamos que el servidor de la tienda esta respondiendo, debera aparecer el mensaje de "Order not valid"
+3. Dar click en el botón "Probar" y verificamos que el servidor de la tienda esta respondiendo, debera aparecer el mensaje de "Probando el WebHook?, Ruta correcta."
 
 ---
 

@@ -1,295 +1,472 @@
 <?php
-class ControllerPaymentCompropago extends Controller {
-  public function index() {
-    $this->language->load('payment/compropago');    
+require_once __DIR__."/../../../vendor/autoload.php";
 
-    $data['text_title'] = $this->language->get('text_title');
-    $data['entry_payment_type'] = $this->language->get('entry_payment_type');
-    $data['button_confirm'] = $this->language->get('button_confirm');
-    $data['providers'] = $this->getProviders();
-  
-    $this->load->model('checkout/order');
-    $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']); 
+use Compropago\Sdk\Client;
+use Compropago\Sdk\Service;
+use Compropago\Sdk\Utils\Store;
 
-    if ($order_info) {
-      if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago.tpl')) {
-        return $this->load->view($this->config->get('config_template') . '/template/payment/compropago.tpl', $data);
-      } else {
-        return $this->load->view('default/template/payment/compropago.tpl', $data);
-      }
-    }
-  }
-  
-  public function getProviders() {
-    $url = 'http://api-compropago.herokuapp.com/v1/providers/true';    
-    $username = $this->config->get('compropago_secret_key');
+class ControllerPaymentCompropago extends Controller
+{
+    /**
+     * Configuraciones de los servicios de compropago
+     * @var array
+     */
+    private $compropagoConfig;
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch, CURLOPT_USERPWD, $username . ":");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $this->_response = curl_exec($ch);
-    curl_close($ch);
+    /**
+     * Cliente de compropago
+     * @var Client
+     */
+    private $compropagoClient;
 
-    $response = json_decode($this->_response,true);
+    /**
+     * Servicios generales de compropago
+     * @var Service
+     */
+    private $compropagoService;
 
-    foreach ($response as $key => $_provider){
-        if($_provider['internal_name'] == 'OXXO'){
-            $response[$key]['item_name'] = 'oxxo';
-        } else if($_provider['internal_name'] == 'SEVEN_ELEVEN'){
-            $response[$key]['item_name'] = 'seven';
-        } else if($_provider['internal_name'] == 'EXTRA'){
-            $response[$key]['item_name'] = 'extra';
-        } else if($_provider['internal_name'] == 'SORIANA'){
-            $response[$key]['item_name'] = 'soriana';
-        } else if($_provider['internal_name'] == 'CHEDRAUI'){
-            $response[$key]['item_name'] = 'chedraui';
-        } else if($_provider['internal_name'] == 'ELEKTRA'){
-            $response[$key]['item_name'] = 'elektra';
-        } else if($_provider['internal_name'] == 'FARMACIA_BENAVIDES'){
-            $response[$key]['item_name'] = 'benavides';
-        } else if($_provider['internal_name'] == 'FARMACIA_GUADALAJARA'){
-            $response[$key]['item_name'] = 'guadalajara';
-        } else if($_provider['internal_name'] == 'FARMACIA_ESQUIVAR'){
-            $response[$key]['item_name'] = 'esquivar';
-        } else if($_provider['internal_name'] == 'COPPEL'){
-            $response[$key]['item_name'] = 'coppel';
-        }   
+
+    /**
+     * ControllerPaymentCompropago constructor.
+     * @param $registry
+     */
+    public function __construct($registry)
+    {
+        parent::__construct($registry);
+        $this->initServices();
     }
 
-    return $response;   
-  }
 
-  public function send() {    
-    $this->load->model('checkout/order');
+    /**
+     * Inicializacion de las clases del SDK
+     */
+    private function initServices()
+    {
+        $this->compropagoConfig = array(
+            'publickey' => $this->config->get('compropago_public_key'),
+            'privatekey' => $this->config->get('compropago_secret_key'),
+            'live' => $this->config->get('compropago_mode')
+        );
 
-    $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
-    $products = $this->cart->getProducts();
-
-    $order_name = '';
-
-    foreach ($products as $product) {
-        $order_name .= $product['name'];
+        $this->compropagoClient = new Client($this->compropagoConfig);
+        $this->compropagoService = new Service($this->compropagoClient);
     }
 
-    $data = array(
+
+    /**
+     * @return mixed
+     * Carga del template inicial de proveedores
+     */
+    public function index()
+    {
+        $this->language->load('payment/compropago');
+        $this->load->model('setting/setting');
+
+        $data['text_title'] = $this->language->get('text_title');
+        $data['entry_payment_type'] = $this->language->get('entry_payment_type');
+        $data['button_confirm'] = $this->language->get('button_confirm');
+
+        $data['comprodata'] = array(
+            'providers' => $this->compropagoService->getProviders(),
+            'showlogo' => $this->config->get('compropago_showlogo'),
+            'description' => $this->config->get('compropago_description'),
+            'instrucciones' => $this->config->get('compropago_instrucciones')
+        );
+
+
+        $this->load->model('checkout/order');
+        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+
+        if ($order_info) {
+            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago.tpl')) {
+                return $this->load->view($this->config->get('config_template') . '/template/payment/compropago.tpl', $data);
+            } else {
+                return $this->load->view('default/template/payment/compropago.tpl', $data);
+            }
+        }
+    }
+
+
+    /**
+     * Prosesamiento de la orden de compra
+     */
+    public function send()
+    {
+        $this->load->model('checkout/order');
+
+        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+
+        $products = $this->cart->getProducts();
+
+        $order_name = '';
+
+        foreach ($products as $product) {
+            $order_name .= $product['name'];
+        }
+
+        $data = array(
             'order_id'        => $order_info['order_id'],
             'order_price'        => $order_info['total'],
             'order_name'         => $order_name,
             'customer_name'         => $order_info['payment_firstname'],
             'customer_email'     => $order_info['email'],
-            'payment_type'               => $this->request->post['payment-type']
+            'payment_type'               => $this->request->post['compropagoProvider']
         );
-    
-    $url = 'https://api-compropago.herokuapp.com/v1/charges';    
-    $username = $this->config->get('compropago_secret_key');
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch, CURLOPT_USERPWD, $username . ":");
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);        
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
-    $this->_response = curl_exec($ch);
+        $response = $this->compropagoService->placeOrder($data);
 
-    curl_close($ch);
 
-    $response = json_decode($this->_response,true);
+        /**
+         * Inicia el registro de transacciones
+         */
 
-    if (isset($response)){            
-        $error = ("El servicio de Compropago no se encuentra disponible.");
-        $json['error'] = $error; 
+        $recordTime = time();
+        $order_id = $order_info['order_id'];
+        $ioIn = base64_encode(json_encode($response));
+        $ioOut = base64_encode(json_encode($data));
+
+        // Creacion del query para compropago_orders
+        $query = "INSERT INTO " . DB_PREFIX . "compropago_orders (`date`,`modified`,`compropagoId`,`compropagoStatus`,`storeCartId`,`storeOrderId`,`storeExtra`,`ioIn`,`ioOut`)".
+            " values (:fecha:,:modified:,':cpid:',':cpstat:',':stcid:',':stoid:',':ste:',':ioin:',':ioout:')";
+
+        $query = str_replace(":fecha:",$recordTime,$query);
+        $query = str_replace(":modified:",$recordTime,$query);
+        $query = str_replace(":cpid:",$response->id,$query);
+        $query = str_replace(":cpstat:",$response->status,$query);
+        $query = str_replace(":stcid:",$order_id,$query);
+        $query = str_replace(":stoid:",$order_id,$query);
+        $query = str_replace(":ste:",'COMPROPAGO_PENDING',$query);
+        $query = str_replace(":ioin:",$ioIn,$query);
+        $query = str_replace(":ioout:",$ioOut,$query);
+
+
+        $this->db->query($query);
+
+        $compropagoOrderId = $this->db->getLastId();
+
+        $query2 = "INSERT INTO ".DB_PREFIX."compropago_transactions
+        (orderId,date,compropagoId,compropagoStatus,compropagoStatusLast,ioIn,ioOut)
+        values (:orderid:,:fecha:,':cpid:',':cpstat:',':cpstatl:',':ioin:',':ioout:')";
+
+        $query2 = str_replace(":orderid:",$compropagoOrderId,$query2);
+        $query2 = str_replace(":fecha:",$recordTime,$query2);
+        $query2 = str_replace(":cpid:",$response->id,$query2);
+        $query2 = str_replace(":cpstat:",$response->status,$query2);
+        $query2 = str_replace(":cpstatl:",$response->status,$query2);
+        $query2 = str_replace(":ioin:",$ioIn,$query2);
+        $query2 = str_replace(":ioout:",$ioOut,$query2);
+
+        $this->db->query($query2);
+
+
+        /**
+         * Fin de transacciones
+         */
+
+
+        /**
+         * Envio de datos final para render de la vista de recibo
+         */
+
+        $json['success'] = htmlspecialchars_decode($this->url->link('payment/compropago/success', 'info_order='.base64_encode(json_encode($response)) , 'SSL'));
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
-    
-    $json = array();
-
-    if (isset($response['type'])){
-        $error = $response['message'];
-        $json['error'] = $error;     
-    }
 
 
-    if (isset($response['id']) || isset($response['payment_id'])){
-        $this->model_checkout_order->addOrderHistory($order_info['order_id'], $this->config->get('compropago_order_status_new_id'));
+    /**
+     * Despliegue del recibo de compra
+     */
+    public function success()
+    {
+        $this->language->load('payment/compropago');
+        $this->cart->clear();
 
-        if($response['api_version'] != '1.0') {      
-            $expiration_date = $response['exp_date'];
-            $short_id = $response['short_id'];
-            $instructions = $response['instructions'];
-            $step_1 = $instructions['step_1'];
-            $step_2 = $instructions['step_2'];
-            $step_3 = $instructions['step_3'];
-            $note_extra_comition = $instructions['note_extra_comition'];
-            $note_expiration_date = $instructions['note_expiration_date'];
+        if (!$this->request->server['HTTPS']) {
+            $data['base'] = HTTP_SERVER;
         } else {
-            $expiration_date = $response['expiration_date'];
-            $short_id = $response['short_payment_id'];
-            $instructions = $response['payment_instructions'];
-            $step_1 = $instructions['step_1'];
-            $step_2 = $instructions['step_2'];
-            $step_3 = $instructions['step_3'];
-            $note_extra_comition = $instructions['note_extra_comition'];
-            $note_expiration_date = $instructions['note_expiration_date'];
+            $data['base'] = HTTPS_SERVER;
         }
-        
-        $json['success'] = htmlspecialchars_decode($this->url->link('payment/compropago/success', 'short_id='.$short_id.'&expiration_date='.$expiration_date.'&step_1='.$step_1.'&step_2='.$step_2.'&step_3='.$step_3.'&note_extra_comition='.$note_extra_comition.'&note_expiration_date='.$note_expiration_date , 'SSL'));             
-    }         
 
-    $this->response->addHeader('Content-Type: application/json');
-    $this->response->setOutput(json_encode($json));
-  }
+        $data['info_order'] = $this->request->get['info_order'];
 
-  public function success() {
-    $this->language->load('payment/compropago');
-    $this->cart->clear();
 
-    if (!$this->request->server['HTTPS']) {
-        $data['base'] = HTTP_SERVER;
-    } else {
-        $data['base'] = HTTPS_SERVER;
-    }    
-    
-    $data['short_id'] = $this->request->get['short_id'];
-    $data['expiration_date'] = $this->request->get['expiration_date'];
-    $data['step_1'] = $this->request->get['step_1'];
-    $data['step_2'] = $this->request->get['step_2'];
-    $data['step_3'] = $this->request->get['step_3'];
-    $data['note_extra_comition'] = $this->request->get['note_extra_comition'];
-    $data['note_expiration_date'] = $this->request->get['note_expiration_date'];
+        $data['breadcrumbs'] = array();
 
-    $data['breadcrumbs'] = array();
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_home'),
+            'href' => $this->url->link('common/home')
+        );
 
-    $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_home'),
-        'href' => $this->url->link('common/home')
-    );
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_basket'),
+            'href' => $this->url->link('checkout/cart')
+        );
 
-    $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_basket'),
-        'href' => $this->url->link('checkout/cart')
-    );
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_checkout'),
+            'href' => $this->url->link('checkout/checkout', '', 'SSL')
+        );
 
-    $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_checkout'),
-        'href' => $this->url->link('checkout/checkout', '', 'SSL')
-    );
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_success'),
+            'href' => $this->url->link('checkout/success')
+        );
 
-    $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('text_success'),
-        'href' => $this->url->link('checkout/success')
-    );
+        $data['language'] = $this->language->get('code');
+        $data['button_continue'] = $this->language->get('button_continue');
+        $data['continue'] = $this->url->link('common/home');
 
-    $data['text_success_title'] = $this->language->get('text_success_title');
-    $data['text_date_expiration'] = $this->language->get('text_date_expiration');
-    $data['text_instructions'] = $this->language->get('text_instructions');
-    $data['text_comitions'] = $this->language->get('text_comitions');
-    $data['text_warning'] = $this->language->get('text_warning');
-    $data['text_reference'] = $this->language->get('text_reference');
-    $data['text_card_number'] = $this->language->get('text_card_number');
-    
-    $data['language'] = $this->language->get('code');
-    $data['button_continue'] = $this->language->get('button_continue');
-    $data['continue'] = $this->url->link('common/home');
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['column_right'] = $this->load->controller('common/column_right');
+        $data['content_top'] = $this->load->controller('common/content_top');
+        $data['content_bottom'] = $this->load->controller('common/content_bottom');
+        $data['footer'] = $this->load->controller('common/footer');
+        $data['header'] = $this->load->controller('common/header');
 
-    $data['column_left'] = $this->load->controller('common/column_left');
-    $data['column_right'] = $this->load->controller('common/column_right');
-    $data['content_top'] = $this->load->controller('common/content_top');
-    $data['content_bottom'] = $this->load->controller('common/content_bottom');
-    $data['footer'] = $this->load->controller('common/footer');
-    $data['header'] = $this->load->controller('common/header');
-
-    if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago_success.tpl')) {
-        $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/compropago_success.tpl', $data));
-    } else {
-        $this->response->setOutput($this->load->view('default/template/payment/compropago_success.tpl', $data));
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago_success.tpl')) {
+            $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/compropago_success.tpl', $data));
+        } else {
+            $this->response->setOutput($this->load->view('default/template/payment/compropago_success.tpl', $data));
+        }
     }
-  }
 
-  public function webhook() {
-    $body = @file_get_contents('php://input');
-    $event_json = json_decode($body);
-    $this->load->model('checkout/order');
 
-    if(isset($event_json)){
-        if ($event_json->{'api_version'} === '1.1') {
-            if ($event_json->{'id'}){
-                $order = $this->verifyOrder($event_json->{'id'});  
-                if (isset($order['id'])){
-                    if ($order['id'] === $event_json->{'id'}) {
-                        $order_id = $this->model_checkout_order->getOrder($order['order_info']['order_id']);  
+    /**
+     * WebHook compropago
+     */
+    public function webhook()
+    {
+        $this->load->model('setting/setting');
+
+        $request = @file_get_contents('php://input');
+        $jsonObj = json_decode($request);
+
+        if($jsonObj){
+            if($this->config->get('compropago_status')){
+
+                $compropagoConfig = array(
+                    'publickey' => $this->config->get('compropago_public_key'),
+                    'privatekey' => $this->config->get('compropago_secret_key'),
+                    'live' => (($this->config->get('compropago_mode') == "NO") ? false : true)
+                );
+
+                try{
+                    $compropagoClient = new Client($compropagoConfig);
+                    $compropagoService = new Service($compropagoClient);
+
+                    if(!$respose = $compropagoService->evalAuth()){
+                        throw new \Exception("ComproPago Error: Llaves no validas");
+                    }
+
+                    if(!Store::validateGateway($compropagoClient)){
+                        throw new \Exception("ComproPago Error: La tienda no se encuentra en un modo de ejecución valido");
+                    }
+
+
+                }catch(\Exception $e){
+                    echo $e->getMessage();
+                }
+
+            }else{
+                echo "Compropago is not enabled.";
+            }
+
+            //webhook Test?
+            if($jsonObj->id=="ch_00000-000-0000-000000" || $jsonObj->short_id =="000000"){
+                echo "Probando el WebHook?, <b>Ruta correcta.</b>";
+            }else{
+                //api normalization
+                if($jsonObj->api_version=='1.0'){
+                    $jsonObj->id=$jsonObj->data->object->id;
+                    $jsonObj->short_id=$jsonObj->data->object->short_id;
+                }
+
+
+                try{
+                    $response  = $compropagoService->verifyOrder($jsonObj->id);
+
+                    if($response->type == 'error'){
+                        throw new \Compropago\Sdk\Exception("Error al procesar el numero de orden");
+                    }
+
+                    $cp_orders = $this->db->query("SHOW TABLES LIKE '". DB_PREFIX ."compropago_orders'");
+                    $cp_transactions = $this->db->query("SHOW TABLES LIKE '". DB_PREFIX . "compropago_transactions'");
+
+                    if($cp_orders->num_rows == 0 || $cp_transactions->num_rows == 0){
+                        throw new \Compropago\Sdk\Exception('ComproPago Tables Not Found');
+                    }
+
+                    switch ($response->type){
+                        case 'charge.success':
+                            $nomestatus = "COMPROPAGO_SUCCESS";
+                            break;
+                        case 'charge.pending':
+                            $nomestatus = "COMPROPAGO_PENDING";
+                            break;
+                        case 'charge.declined':
+                            $nomestatus = "COMPROPAGO_DECLINED";
+                            break;
+                        case 'charge.expired':
+                            $nomestatus = "COMPROPAGO_EXPIRED";
+                            break;
+                        case 'charge.deleted':
+                            $nomestatus = "COMPROPAGO_DELETED";
+                            break;
+                        case 'charge.canceled':
+                            $nomestatus = "COMPROPAGO_CANCELED";
+                            break;
+                        default:
+                            echo 'Invalid Response type';
+                    }
+
+                    $thisOrder = $this->db->query("SELECT * FROM ". DB_PREFIX ."compropago_orders WHERE compropagoId = '".$response->id."'");
+
+                    if($thisOrder->num_rows == 0){
+                        throw new \Compropago\Sdk\Exception('El número de orden no se encontro en la tienda');
+                    }
+
+                    $id = intval($thisOrder->row['storeOrderId']);
+
+                    switch($nomestatus){
+                        case 'COMPROPAGO_SUCCESS':
+                            $idstorestatus = 5;
+                            break;
+                        case 'COMPROPAGO_PENDING':
+                            $idstorestatus = 1;
+                            break;
+                        case 'COMPROPAGO_DECLINED':
+                            $idstorestatus = 7;
+                            break;
+                        case 'COMPROPAGO_EXPIRED':
+                            $idstorestatus = 14;
+                            break;
+                        case 'COMPROPAGO_DELETED':
+                            $idstorestatus = 7;
+                            break;
+                        case 'COMPROPAGO_CANCELED':
+                            $idstorestatus = 7;
+                            break;
+                        default:
+                            $idstorestatus = 1;
+                    }
+
+                    $this->db->query("UPDATE ". DB_PREFIX . "order SET order_status_id = ".$idstorestatus." WHERE order_id = ".$id);
+
+                    $recordTime = time();
+
+                    $this->db->query("UPDATE ". DB_PREFIX ."compropago_orders SET
+                    modified = ".$recordTime.",
+                    compropagoStatus = '".$response->type."',
+                    storeExtra = '".$nomestatus."',
+                    WHERE id = ".$thisOrder->row['id']);
+
+                    $ioIn = base64_encode(json_encode($jsonObj));
+                    $ioOut = base64_encode(json_encode($response));
+
+
+                    $query2 = "INSERT INTO ".DB_PREFIX."compropago_transactions
+                    (orderId,date,compropagoId,compropagoStatus,compropagoStatusLast,ioIn,ioOut)
+                    values (:orderid:,:fecha:,':cpid:',':cpstat:',':cpstatl:',':ioin:',':ioout:')";
+
+                    $query2 = str_replace(":orderid:",$thisOrder->row['id'],$query2);
+                    $query2 = str_replace(":fecha:",$recordTime,$query2);
+                    $query2 = str_replace(":cpid:",$response->id,$query2);
+                    $query2 = str_replace(":cpstat:",$response->type,$query2);
+                    $query2 = str_replace(":cpstatl:",$thisOrder->row['compropagoStatus'],$query2);
+                    $query2 = str_replace(":ioin:",$ioIn,$query2);
+                    $query2 = str_replace(":ioout:",$ioOut,$query2);
+
+
+                    $this->db->query($query2);
+
+
+                }catch(\Exception $e){
+                    echo $e->getMessage();
+                }
+            }
+        }else{
+            echo 'Tipo de Request no Valido';
+        }
+
+
+
+        /*$body = @file_get_contents('php://input');
+        $event_json = json_decode($body);
+        $this->load->model('checkout/order');
+
+        if(isset($event_json)){
+            if ($event_json->{'api_version'} === '1.1') {
+                if ($event_json->{'id'}){
+                    $order = $this->verifyOrder($event_json->{'id'});
+                    if (isset($order['id'])){
+                        if ($order['id'] === $event_json->{'id'}) {
+                            $order_id = $this->model_checkout_order->getOrder($order['order_info']['order_id']);
+                        } else {
+                            echo 'Order not valid';
+                        }
                     } else {
                         echo 'Order not valid';
                     }
-                } else {
-                    echo 'Order not valid';
                 }
+            } else {
+                if ($event_json->data->object->{'id'}){
+                    $order = $this->verifyOrder($event_json->data->object->{'id'});
+                    if (isset($order['data']['object']['id'])){
+                        if ($order['data']['object']['id'] === $event_json->data->object->{'id'}) {
+                            $order_id = $this->model_checkout_order->getOrder($order['data']['object']['payment_details']['product_id']);
+                        } else {
+                            echo 'Order not valid';
+                        }
+                    } else {
+                        echo 'Order not valid';
+                    }
+
+                }
+            }
+
+            $type = $order['type'];
+
+            switch ($type) {
+                case 'charge.pending':
+                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_new_id'));
+                    break;
+                case 'charge.success':
+                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_approve_id'));
+                    break;
+                case 'charge.declined':
+                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_declined_id'));
+                    break;
+                case 'charge.deleted':
+                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));
+                    break;
+                case 'charge.expired':
+                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));
+                    break;
             }
         } else {
-            if ($event_json->data->object->{'id'}){
-                $order = $this->verifyOrder($event_json->data->object->{'id'});  
-                if (isset($order['data']['object']['id'])){
-                    if ($order['data']['object']['id'] === $event_json->data->object->{'id'}) {
-                        $order_id = $this->model_checkout_order->getOrder($order['data']['object']['payment_details']['product_id']);  
-                    } else {
-                        echo 'Order not valid';
-                    }
-                } else {
-                    echo 'Order not valid';
-                }
-                              
-            }
-        }  
+            echo 'Order not valid';
+        }*/
 
-        $type = $order['type'];
+    }
 
-        switch ($type) {    
-            case 'charge.pending':
-                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_new_id'));        
-                break;
-            case 'charge.success':
-                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_approve_id'));        
-                break;
-            case 'charge.declined':    
-                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_declined_id'));                    
-                break;
-            case 'charge.deleted':
-                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));        
-                break;
-            case 'charge.expired':
-                $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));        
-                break;              
-        } 
-    } else {
-        echo 'Order not valid';
-    }                       
-  }
 
-  public function verifyOrder($id){
-    $url = 'https://api-compropago.herokuapp.com/v1/charges/';
-    $url .=  $id;   
-    $username = $this->config->get('compropago_secret_key');
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch, CURLOPT_USERPWD, $username . ":");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);        
 
-    $this->_response = curl_exec($ch);
+    /**
+     * Verificacion de orden
+     * @param $id
+     * @return \Compropago\Sdk\json
+     */
+    public function verifyOrder($id)
+    {
+        return $this->compropagoService->verifyOrder($id);
+    }
 
-    curl_close($ch);
-
-    $response = json_decode($this->_response,true);
-
-    return $response;
-  } 
+    public function __prueba()
+    {
+        echo "hola";
+    }
 }
-?>
