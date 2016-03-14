@@ -20,10 +20,12 @@ use Compropago\Sdk\Controllers\Views;
 
 <script type="text/javascript">
     $('#button-confirm').bind('click', function() {
+        var internal = $("input[name=compropagoProvider]:checked").val();
+
         $.ajax({
             url: 'index.php?route=payment/compropago/send',
             type: 'post',
-            data: $('#payment :input'),
+            data: {compropagoProvider: internal},
             dataType: 'json',
             beforeSend: function() {
                 $('#button-confirm').button('loading');
