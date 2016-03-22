@@ -154,11 +154,25 @@
                                             <input type="text" name="compropago_db_prefix" id="compropago_db_prefix" value="oc_" placeholder="<?php echo $entry_db_prefix ?>">
                                         </div>
                                     </div-->
+
+                                    <!-- WEBHOOK URI -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="input-sort-order">WebHook</label>
+                                        <div class="col-sm-10">
+
+                                            <?php
+                                                $uri = explode("admin/index.php",$_SERVER["REQUEST_URI"]);
+                                                $uri = $uri[0];
+                                            ?>
+
+                                            <input type="text" value="<?php echo $_SERVER['SERVER_NAME'].$uri."index.php?route=payment/compropago/webhook"; ?>" id="input-sort-order" class="form-control"/>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                
+
                                 <!-- TAB DISPLAY CONFIGURATIONS -->
-                                
+
 
                                 <div role="tabpanel" class="tab-pane" id="display" style="display: none;">
 
