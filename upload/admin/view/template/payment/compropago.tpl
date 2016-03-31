@@ -75,9 +75,9 @@
 
                             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" class="form-horizontal" id="form-compropago">
 
-                                
+
                                 <!-- TAB PLUGIN CONFIGURATIONS -->
-                                
+
 
                                 <div role="tabpanel" class="tab-pane active" id="home">
 
@@ -86,12 +86,12 @@
                                         <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
                                         <div class="col-sm-10">
                                             <select name="compropago_status" id="input-status" class="form-control">
-                                                <?php if ($compropago_status) { ?>
-                                                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-                                                <option value="0"><?php echo $text_disabled; ?></option>
+                                                <?php if (!empty($compropago_status)) { ?>
+                                                    <option value="1" <?php echo $compropago_status ? "selected" : ""; ?> ><?php echo $text_enabled; ?></option>
+                                                    <option value="0" <?php echo !$compropago_status ? "selected" : ""; ?> ><?php echo $text_disabled; ?></option>
                                                 <?php } else { ?>
-                                                <option value="1"><?php echo $text_enabled; ?></option>
-                                                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+                                                    <option value="1" ><?php echo $text_enabled; ?></option>
+                                                    <option value="0" selected ><?php echo $text_disabled; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -99,11 +99,13 @@
 
                                     <!-- LLAVE PUBLICA -->
                                     <div class="form-group required">
-                                        <label class="col-sm-2 control-label" for="entry-public-key"><span data-toggle="tooltip" title="<?php echo $help_public_key; ?>"><?php echo $entry_public_key; ?></span></label>
+                                        <label class="col-sm-2 control-label" for="entry-public-key">
+                                            <span data-toggle="tooltip" title="<?php echo $help_public_key; ?>"><?php echo $entry_public_key; ?></span>
+                                        </label>
                                         <div class="col-sm-10">
                                             <input type="text" name="compropago_public_key" value="<?php echo $compropago_public_key; ?>" placeholder="<?php echo $entry_public_key; ?>" id="entry-public-key" class="form-control"/>
                                             <?php if ($error_public_key) { ?>
-                                            <div class="text-danger"><?php echo $error_public_key; ?></div>
+                                                <div class="text-danger"><?php echo $error_public_key; ?></div>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -114,7 +116,7 @@
                                         <div class="col-sm-10">
                                             <input type="text" name="compropago_secret_key" value="<?php echo $compropago_secret_key; ?>" placeholder="<?php echo $entry_secret_key; ?>" class="form-control" id="entry-secret-key" />
                                             <?php if ($error_secret_key) { ?>
-                                            <div class="text-danger"><?php echo $error_secret_key; ?></div>
+                                                <div class="text-danger"><?php echo $error_secret_key; ?></div>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -129,8 +131,13 @@
 
                                         <div class="col-sm-10">
                                             <select name="compropago_mode" id="" class="form-control">
-                                                <option value="SI"><?php echo $entry_select_mode_true; ?></option>
-                                                <option value="NO" selected><?php echo $entry_select_mode_false; ?></option>
+                                                <?php if(!empty($compropago_mode)){ ?>
+                                                    <option value="SI" <?php echo ($compropago_mode == "SI") ? "selected" : ""; ?> ><?php echo $entry_select_mode_true; ?></option>
+                                                    <option value="NO" <?php echo ($compropago_mode == "NO") ? "selected" : ""; ?> ><?php echo $entry_select_mode_false; ?></option>
+                                                <?php }else{ ?>
+                                                    <option value="SI"><?php echo $entry_select_mode_true; ?></option>
+                                                    <option value="NO" selected><?php echo $entry_select_mode_false; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -143,18 +150,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- DB PREFIX TABLES -->
-                                    <!--div class="form-group required">
-                                        <label for="compropago_db_prefix" class="col-sm-2 control-label">
-                                            <span data-toggle="tooltip" title="<?php echo $help_db_prefix ?>">
-                                                <?php echo $entry_db_prefix ?>
-                                            </span>
-                                        </label>
-                                        <div class="col-sm-10">
-                                            <input type="text" name="compropago_db_prefix" id="compropago_db_prefix" value="oc_" placeholder="<?php echo $entry_db_prefix ?>">
-                                        </div>
-                                    </div-->
-
                                     <!-- WEBHOOK URI -->
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="input-sort-order">WebHook</label>
@@ -165,7 +160,7 @@
                                                 $uri = $uri[0];
                                             ?>
 
-                                            <input type="text" value="<?php echo $_SERVER['SERVER_NAME'].$uri."index.php?route=payment/compropago/webhook"; ?>" id="input-sort-order" class="form-control"/>
+                                            <p class="form-control-static"><?php echo $_SERVER['SERVER_NAME'].$uri."index.php?route=payment/compropago/webhook"; ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -181,8 +176,13 @@
                                         <label for="compropago_showlogo" class="col-sm-2 control-label"><?php echo $entry_showlogo; ?></label>
                                         <div class="col-sm-10">
                                             <select name="compropago_showlogo" id="compropago_showlogo" class="form-control">
-                                                <option value="yes" selected>Yes</option>
-                                                <option value="no">No</option>
+                                                <?php if(!empty($compropago_showlogo)){ ?>
+                                                    <option value="yes" <?php echo ($compropago_showlogo == "yes") ? "selected" : ""; ?> >Yes</option>
+                                                    <option value="no" <?php echo ($compropago_showlogo == "no") ? "selected" : ""; ?> >No</option>
+                                                <?php }else{ ?>
+                                                    <option value="yes" selected>Yes</option>
+                                                    <option value="no">No</option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -191,7 +191,7 @@
                                     <div class="form-group">
                                         <label for="compropago_description" class="col-sm-2 control-label"><?php echo $entry_description; ?></label>
                                         <div class="col-sm-10">
-                                            <input type="text" name="compropago_description" id="compropago_description" class="form-control" placeholder="<?php echo $entry_description; ?>">
+                                            <input value="<?php echo $compropago_description; ?>" type="text" name="compropago_description" id="compropago_description" class="form-control" placeholder="<?php echo $entry_description; ?>">
                                         </div>
                                     </div>
 
@@ -199,15 +199,15 @@
                                     <div class="form-group">
                                         <label for="compropago_instrucciones" class="col-sm-2 control-label"><?php echo $entry_instrucciones; ?></label>
                                         <div class="col-sm-10">
-                                            <textarea name="compropago_instrucciones" id="compropago_instrucciones" class="form-control" placeholder="<?php echo $entry_instrucciones; ?>"></textarea>
+                                            <textarea name="compropago_instrucciones" id="compropago_instrucciones" class="form-control" placeholder="<?php echo $entry_instrucciones; ?>"><?php echo $compropago_instrucciones; ?></textarea>
                                         </div>
                                     </div>
 
                                 </div>
 
-                                
+
                                 <!-- TAB ESTATUS CONFIGURATIONS -->
-                                
+
 
                                 <div role="tabpanel" class="tab-pane" id="estatus" style="display: none;">
                                     <!-- NEW ORDER STATUS -->
@@ -216,11 +216,17 @@
                                         <div class="col-sm-10">
                                             <select name="compropago_order_status_new_id" id="input-order-status-new" class="form-control">
                                                 <?php foreach ($order_statuses as $order_status) { ?>
-                                                <?php if ($order_status['order_status_id'] == $compropago_order_status_new_id) { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                                                <?php } else { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                                                <?php } ?>
+                                                    <?php if(!empty($compropago_order_status_new_id)){ ?>
+                                                        <?php if ($order_status['order_status_id'] == $compropago_order_status_new_id) { ?>
+                                                            <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                                        <?php } ?>
+                                                    <?php }else{ ?>
+                                                        <option value="<?php echo $order_status['order_status_id']; ?>" <?php echo ($order_status['order_status_id'] == 1) ? "selected" : ""; ?> >
+                                                            <?php echo $order_status['name']; ?>
+                                                        </option>
+                                                    <?php } ?>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -232,66 +238,21 @@
                                         <div class="col-sm-10">
                                             <select name="compropago_order_status_approve_id" id="input-order-status-approve" class="form-control">
                                                 <?php foreach ($order_statuses as $order_status) { ?>
-                                                <?php if ($order_status['order_status_id'] == $compropago_order_status_approve_id) { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                                                <?php } else { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                                                <?php } ?>
-                                                <?php } ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!--
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="input-order-status-pending"><?php echo $entry_order_status_pending; ?></label>
-                                        <div class="col-sm-10">
-                                            <select name="compropago_order_status_pending_id" id="input-order-status-pending" class="form-control">
-                                                <?php foreach ($order_statuses as $order_status) { ?>
-                                                <?php if ($order_status['order_status_id'] == $compropago_order_status_pending_id) { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                                                <?php } else { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                                                <?php } ?>
+                                                    <?php if(!empty($compropago_order_status_approve_id)){ ?>
+                                                        <?php if ($order_status['order_status_id'] == $compropago_order_status_approve_id) { ?>
+                                                            <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                                        <?php } ?>
+                                                    <?php }else{ ?>
+                                                        <option value="<?php echo $order_status['order_status_id']; ?>" <?php echo ($order_status['order_status_id'] == 2) ? "selected" : ""; ?> >
+                                                            <?php echo $order_status['name']; ?>
+                                                        </option>
+                                                    <?php } ?>
                                                 <?php } ?>
                                             </select>
                                         </div>
                                     </div>
-                                    -->
-
-                                    <!--
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="input-order-status-declined"><?php echo $entry_order_status_declined; ?></label>
-                                        <div class="col-sm-10">
-                                            <select name="compropago_order_status_declined_id" id="input-order-status-declined" class="form-control">
-                                                <?php foreach ($order_statuses as $order_status) { ?>
-                                                <?php if ($order_status['order_status_id'] == $compropago_order_status_declined_id) { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                                                <?php } else { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                                                <?php } ?>
-                                                <?php } ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    -->
-
-                                    <!--
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="input-order-status-cancel"><?php echo $entry_order_status_cancel; ?></label>
-                                        <div class="col-sm-10">
-                                            <select name="compropago_order_status_cancel_id" id="input-order-status-cancel" class="form-control">
-                                                <?php foreach ($order_statuses as $order_status) { ?>
-                                                <?php if ($order_status['order_status_id'] == $compropago_order_status_cancel_id) { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                                                <?php } else { ?>
-                                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                                                <?php } ?>
-                                                <?php } ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    -->
                                 </div>
 
                             </form>
