@@ -18,7 +18,7 @@ Con ComproPago puede recibir pagos en OXXO, 7Eleven y muchas tiendas más en tod
 - [Guía para Empezar a usar ComproPago](https://compropago.com/ayuda-y-soporte/como-comenzar-a-usar-compropago)
 - [Información de Contacto](https://compropago.com/contacto)
 
-Este modulo provee el servicio de ComproPago para poder generar intensiones de pago dentro de la plataforma Magento.
+Este modulo provee el servicio de ComproPago para poder generar intensiones de pago dentro de la plataforma Opencart.
 
 * [Instalación](#install)
 * [¿Cómo trabaja el modulo?](#howto)
@@ -99,4 +99,4 @@ Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad 
 * Librerías y Plugins
 * Shopify
 
-[compropago-3-0-x]: https://s3.amazonaws.com/compropago/plugins/opencart/opencart-oc-2-0-0.zip
+[compropago-3-0-x]: https://s3.amazonaws.com/compropago/plugins/opencart/compropago-oc-2-0-x.zip
