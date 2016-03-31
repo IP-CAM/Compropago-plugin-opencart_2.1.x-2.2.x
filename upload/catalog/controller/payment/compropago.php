@@ -93,6 +93,9 @@ class ControllerPaymentCompropago extends Controller
     public function send()
     {
         $this->load->model('checkout/order');
+        $this->load->model('setting/setting');
+
+        $order_id = $this->session->data['order_id'];
 
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
@@ -158,6 +161,16 @@ class ControllerPaymentCompropago extends Controller
         $query2 = str_replace(":ioout:",$ioOut,$query2);
 
         $this->db->query($query2);
+
+
+        /**
+         * Update correct status in orders
+         */
+
+        $status_update = $this->config->get('compropago_order_status_new_id');
+
+        $query_update = "UPDATE ".DB_PREFIX."order SET order_status_id = $status_update WHERE order_id = $order_id";
+        $this->db->query($query_update);
 
 
         /**
