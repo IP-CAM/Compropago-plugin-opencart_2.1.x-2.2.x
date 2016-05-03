@@ -1,6 +1,6 @@
 <?php
 
-$_['text_title'] = 'Compropago Payment Method';
+$_['text_title'] = 'ComproPago (Oxxo, 7Eleven, Copel ...)';
 
 $_['text_success_title'] = '¡Felicitaciones! Su pedido ha sido generado correctamente.';
 $_['text_date_expiration'] = 'Último día para pagar:';

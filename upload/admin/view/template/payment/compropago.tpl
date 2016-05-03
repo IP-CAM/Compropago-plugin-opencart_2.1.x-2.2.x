@@ -50,6 +50,16 @@
             <!-- CUERPO DEL FORMULARIO DE CONFIGURACION -->
             <div class="panel-body">
 
+                <?php if($compropago_retro_hook){ ?>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="alert alert-warning" role="alert">
+                            <?php echo $compropago_retro_text; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+
                 <div class="row">
                     <div class="col-sm-12">
 
