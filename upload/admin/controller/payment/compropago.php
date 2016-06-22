@@ -2,6 +2,8 @@
 require_once __DIR__."/../../../vendor/autoload.php";
 
 use Compropago\Sdk\Utils\Store;
+use Compropago\Sdk\Client;
+use Compropago\Sdk\Service;
 
 class ControllerPaymentCompropago extends Controller
 {
@@ -29,7 +31,7 @@ class ControllerPaymentCompropago extends Controller
         # Validacion de envio de informacion de configuracion por metodo POST - existencia de llaves publica y privada
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_setting_setting->editSetting('compropago', $this->request->post);
-            $this->session->data['success'] = $this->language->get('text_success');
+            $this->session->data['success'] = $this->language->get('text_success'). " - <b>". $this->session->data['retro_error']."</b>";
             $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
@@ -146,6 +148,15 @@ class ControllerPaymentCompropago extends Controller
          * Inicio del renderizado de la vista de configuracion
          */
 
+        if($this->hookRetroalimentacion()){
+            $data['compropago_retro_hook'] = true;
+
+            $text = $this->getErrorText();
+
+            $data['compropago_retro_text'] = $text;
+            $this->session->data['retro_error'] = $text;
+        }
+
 
         # carga del modulo de estatus de peticion
         $this->load->model('localisation/order_status');
@@ -159,6 +170,95 @@ class ControllerPaymentCompropago extends Controller
 
         # render final de la vista de configuracion del modulo
         $this->response->setOutput($this->load->view('payment/compropago.tpl', $data));
+    }
+
+    /**
+     * Obtiene el error de retroalimentacion.
+     * @return string
+     */
+    private function getErrorText()
+    {
+        $final = "";
+        foreach($this->error as $text){
+            $final .= $text;
+        }
+
+        return $final;
+    }
+
+    /**
+     * Se encarga de generar las retroalimentaciones para el usuario
+     * @return bool
+     */
+    private function hookRetroalimentacion()
+    {
+        $flagerror = false;
+
+        if($this->config->get('compropago_status') == 1){
+            if( !empty($this->config->get('compropago_public_key')) && !empty($this->config->get('compropago_secret_key')) ){
+
+                if($this->config->get('compropago_mode')=='SI'){
+                    $moduleLive=true;
+                }else {
+                    $moduleLive=false;
+                }
+
+                $compropagoConfig = array(
+                    "publickey" => $this->config->get('compropago_public_key'),
+                    "privatekey" => $this->config->get('compropago_secret_key'),
+                    "live" => $moduleLive
+                );
+
+                try{
+                    $compropagoClient = new Client($compropagoConfig);
+                    $compropagoService = new Service($compropagoClient);
+                    //eval keys
+                    if(!$compropagoResponse = $compropagoService->evalAuth()){
+                        $this->error[] = 'Invalid Keys, The Public Key and Private Key must be valid before using this module.';
+                        $flagerror = true;
+                    }else{
+                        if($compropagoResponse->mode_key != $compropagoResponse->livemode){
+                            // compropagoKey vs compropago Mode
+                            $this->error[] = 'Your Keys and Your ComproPago account are set to different Modes.';
+                            $flagerror = true;
+                        }else{
+                            if($moduleLive != $compropagoResponse->livemode){
+                                // store Mode vs compropago Mode
+                                $this->error[] = 'Your Store and Your ComproPago account are set to different Modes.';
+                                $flagerror = true;
+                            }else{
+                                if($moduleLive != $compropagoResponse->mode_key){
+                                    // store Mode vs compropago Keys
+                                    $this->error[] = 'ComproPago ALERT:Your Keys are for a different Mode.';
+                                    $flagerror = true;
+                                }else{
+                                    if(!$compropagoResponse->mode_key && !$compropagoResponse->livemode){
+                                        //can process orders but watch out, NOT live operations just testing
+                                        $this->error[] = 'WARNING: ComproPago account is Running in TEST Mode, NO REAL OPERATIONS';
+                                        $flagerror = true;
+                                    }else{
+                                        $this->errmsg = '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }catch (\Exception $e) {
+                    //something went wrong on the SDK side
+                    $this->error[] = $e->getMessage(); //may not be show or translated
+                    $flagerror = true;
+                }
+            }else{
+                $this->error[] = 'The Public Key and Private Key must be set before using ComproPago';
+                $flagerror = true;
+            }
+        }else{
+            $this->error[] = 'ComproPago is not Enabled';
+            $this->controlVision='no';
+            $flagerror = true;
+        }
+
+        return $flagerror;
     }
 
 

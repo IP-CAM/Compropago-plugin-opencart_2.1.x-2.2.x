@@ -1,6 +1,6 @@
 <?php
 # Cabera de la vista de configuracion del plugin
-$_['heading_title'] = 'Compropago Payment Method';
+$_['heading_title'] = 'ComproPago (Oxxo, 7Eleven, Copel ...)';
 
 # Texto en el segundo nivel de los breadcrums en la cabecera de configuracion
 $_['text_payment'] = 'Payments';
@@ -16,7 +16,7 @@ $_['text_edit'] = 'Edit Compropago';
 $_['text_compropago'] = '<a href="http://www.compropago.com/documentacion/plugins" target="_blank"><img src="view/image/payment/compropago.png" alt="ComproPago" title="ComproPago" style="border: 1px solid #EEEEEE;" /></a>';
 
 # Texto desplegado de cofiguracion exitosa en el listado de modulos
-$_['text_success'] = 'Compropago Plugin has been configurated.';
+$_['text_success'] = 'ComproPago Plugin has been configurated.';
 
 # Texto de inputs de configuracion;
 $_['entry_secret_key'] = 'Secret Key';
