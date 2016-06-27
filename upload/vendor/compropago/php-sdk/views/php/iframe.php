@@ -18,12 +18,20 @@
  * @author Rolando Lucio <rolando@compropago.com>
  * @since 1.0.3
  */
+
+$id = "";
+
+if(isset($compropagoData->id)){
+    $id = $compropagoData->id;
+}else{
+    $id = $compropagoData;
+}
 ?>
 <div id="compropagoWrapper">
 	<hr class="compropagoHr">
 	
 	 	<div class="compropagoDivFrame" id="compropagodContainer" style="width: 100%;">
-	 		<iframe style="width: 100%;" id="compropagodFrame"  src="https://www.compropago.com/comprobante/?confirmation_id=<?php echo $compropagoData->id;?>"  frameborder="0" scrolling="yes"> </iframe>
+	 		<iframe style="width: 100%;" id="compropagodFrame"  src="https://www.compropago.com/comprobante/?confirmation_id=<?php echo $id;?>"  frameborder="0" scrolling="yes"> </iframe>
 	 	</div>
 	<script type="text/javascript">
 	function resizeIframe() {

@@ -9,8 +9,12 @@ use Compropago\Sdk\Controllers\Views;
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-12" style="text-align: center;">
-            <?php Views::loadView('iframe',json_decode(base64_decode($info_order))); ?>
+        <div class="col-sm-12">
+            <?php
+                $obj = json_decode(base64_decode($info_order));
+                $id = $obj->id;
+            ?>
+            <?php Views::loadView('iframe', $id); ?>
         </div>
     </div>
 </div>

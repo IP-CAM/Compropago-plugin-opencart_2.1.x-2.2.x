@@ -78,11 +78,13 @@ class ControllerPaymentCompropago extends Controller
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
         if ($order_info) {
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago.tpl')) {
+            /*if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago.tpl')) {
                 return $this->load->view($this->config->get('config_template') . '/template/payment/compropago.tpl', $data);
             } else {
-                return $this->load->view('default/template/payment/compropago.tpl', $data);
-            }
+                return $this->load->view('payment/compropago', $data);
+            }*/
+
+            return $this->load->view('payment/compropago', $data);
         }
     }
 
@@ -239,11 +241,15 @@ class ControllerPaymentCompropago extends Controller
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
 
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago_success.tpl')) {
+        /*if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/compropago_success.tpl')) {
+            die("Entra if");
             $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/compropago_success.tpl', $data));
         } else {
-            $this->response->setOutput($this->load->view('default/template/payment/compropago_success.tpl', $data));
-        }
+            die("Entra else");
+            $this->response->setOutput($this->load->view('payment/compropago_success', $data));
+        }*/
+
+        $this->response->setOutput($this->load->view('payment/compropago_success', $data));
     }
 
 
