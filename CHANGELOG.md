@@ -1,6 +1,7 @@
 # Changelog
 
-##27-06
+##27-06-2016 v2.1.0
+Version de compativilidad con opencart 2.2.0
 
 
 ##22-06-2016 v2.0.3
