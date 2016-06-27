@@ -26,8 +26,8 @@ Este modulo provee el servicio de ComproPago para poder generar intensiones de p
 * [Sincronización con los webhooks](#webhook)
 
 ## Requerimientos
-* [Opencart 2.1.x +](https://www.woothemes.com/woocommerce/)
-* [PHP >= 5.4](http://www.php.net/)
+* [Opencart 2.2.x +](http://www.opencart.com/index.php?route=download/download)
+* [PHP >= 5.5](http://www.php.net/)
 * [PHP JSON extension](http://php.net/manual/en/book.json.php)
 * [PHP cURL extension](http://php.net/manual/en/book.curl.php)
 
@@ -89,7 +89,7 @@ ComproPago te ofrece un API tipo REST para integrar pagos en efectivo en tu come
 
 **[General] (https://compropago.com/documentacion)**
 
-Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad que proporciona ComproPAgo
+Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad que proporciona ComproPago
 
 
 **[Herramientas] (https://compropago.com/documentacion/boton-pago)**
