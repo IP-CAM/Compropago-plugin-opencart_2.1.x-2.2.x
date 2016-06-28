@@ -99,7 +99,7 @@ class ControllerPaymentCompropago extends Controller
 
         $order_id = $this->session->data['order_id'];
 
-        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+        $order_info = $this->model_checkout_order->getOrder($order_id);
 
         $products = $this->cart->getProducts();
 
@@ -110,12 +110,14 @@ class ControllerPaymentCompropago extends Controller
         }
 
         $data = array(
-            'order_id'        => $order_info['order_id'],
+            'order_id'           => $order_info['order_id'],
             'order_price'        => $order_info['total'],
             'order_name'         => $order_name,
-            'customer_name'         => $order_info['payment_firstname'],
+            'customer_name'      => $order_info['payment_firstname'],
             'customer_email'     => $order_info['email'],
-            'payment_type'               => $this->request->post['compropagoProvider']
+            'payment_type'       => $this->request->post['compropagoProvider'],
+            'app_client_name'    => 'opencart',
+            'app_client_version' => VERSION
         );
 
 
@@ -409,66 +411,6 @@ class ControllerPaymentCompropago extends Controller
         }else{
             echo 'Tipo de Request no Valido';
         }
-
-
-
-        /*$body = @file_get_contents('php://input');
-        $event_json = json_decode($body);
-        $this->load->model('checkout/order');
-
-        if(isset($event_json)){
-            if ($event_json->{'api_version'} === '1.1') {
-                if ($event_json->{'id'}){
-                    $order = $this->verifyOrder($event_json->{'id'});
-                    if (isset($order['id'])){
-                        if ($order['id'] === $event_json->{'id'}) {
-                            $order_id = $this->model_checkout_order->getOrder($order['order_info']['order_id']);
-                        } else {
-                            echo 'Order not valid';
-                        }
-                    } else {
-                        echo 'Order not valid';
-                    }
-                }
-            } else {
-                if ($event_json->data->object->{'id'}){
-                    $order = $this->verifyOrder($event_json->data->object->{'id'});
-                    if (isset($order['data']['object']['id'])){
-                        if ($order['data']['object']['id'] === $event_json->data->object->{'id'}) {
-                            $order_id = $this->model_checkout_order->getOrder($order['data']['object']['payment_details']['product_id']);
-                        } else {
-                            echo 'Order not valid';
-                        }
-                    } else {
-                        echo 'Order not valid';
-                    }
-
-                }
-            }
-
-            $type = $order['type'];
-
-            switch ($type) {
-                case 'charge.pending':
-                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_new_id'));
-                    break;
-                case 'charge.success':
-                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_approve_id'));
-                    break;
-                case 'charge.declined':
-                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_declined_id'));
-                    break;
-                case 'charge.deleted':
-                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));
-                    break;
-                case 'charge.expired':
-                    $this->model_checkout_order->addOrderHistory($order_id['order_id'], $this->config->get('compropago_order_status_cancel_id'));
-                    break;
-            }
-        } else {
-            echo 'Order not valid';
-        }*/
-
     }
 
 
