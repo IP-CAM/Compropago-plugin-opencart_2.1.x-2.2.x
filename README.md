@@ -105,7 +105,7 @@ Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad 
 | Opencart | Plugin | Version PHP | Enlace              |
 |----------|--------|-------------|---------------------|
 | 2.1.x    | 2.0.x  | \>=5.5      | [ZIP][oc-zip-2.0.x] |
-| 2.2.0    | 2.1.0  | \>=5.5      | [ZIP][oc-zip-2.1.0] |
+| 2.2.0    | 2.1.x  | \>=5.5      | [ZIP][oc-zip-2.1.0] |
 
 [compropago-3-0-x]: https://s3.amazonaws.com/compropago/plugins/opencart/compropago-oc-2-0-x.zip
 [oc-zip-2.0.x]: https://github.com/compropago/plugin-opencart/releases/download/2.0.3/compropago-oc-2-0-3.zip
