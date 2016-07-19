@@ -1,7 +1,7 @@
 > ## Si llego buscando el archivo de instalación para su tienda [Descargue la última versión dando click Aquí] [compropago-3-0-x]
 
 
-# Plugin para OpenCart 2.1.x
+# Plugin para OpenCart 2.2.x
 
 ## Descripción
 Este modulo provee el servicio de ComproPago para poder generar intenciones de pago dentro de la plataforma Opencart.
@@ -26,8 +26,8 @@ Este modulo provee el servicio de ComproPago para poder generar intensiones de p
 * [Sincronización con los webhooks](#webhook)
 
 ## Requerimientos
-* [Opencart 2.1.x +](https://www.woothemes.com/woocommerce/)
-* [PHP >= 5.4](http://www.php.net/)
+* [Opencart 2.2.x +](http://www.opencart.com/index.php?route=download/download)
+* [PHP >= 5.5](http://www.php.net/)
 * [PHP JSON extension](http://php.net/manual/en/book.json.php)
 * [PHP cURL extension](http://php.net/manual/en/book.curl.php)
 
@@ -89,7 +89,7 @@ ComproPago te ofrece un API tipo REST para integrar pagos en efectivo en tu come
 
 **[General] (https://compropago.com/documentacion)**
 
-Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad que proporciona ComproPAgo
+Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad que proporciona ComproPago
 
 
 **[Herramientas] (https://compropago.com/documentacion/boton-pago)**
@@ -99,4 +99,15 @@ Información de Comisiones y Horarios, como Transferir tu dinero y la Seguridad 
 * Librerías y Plugins
 * Shopify
 
+
+## Compativilidad de versiones
+
+| Opencart | Plugin | Version PHP | Enlace              |
+|----------|--------|-------------|---------------------|
+| 2.1.x    | 2.0.x  | \>=5.5      | [ZIP][oc-zip-2.0.x] |
+| 2.2.0    | 2.1.x  | \>=5.5      | [ZIP][oc-zip-2.1.0] |
+
 [compropago-3-0-x]: https://s3.amazonaws.com/compropago/plugins/opencart/compropago-oc-2-0-x.zip
+[oc-zip-2.0.x]: https://github.com/compropago/plugin-opencart/releases/download/2.0.3/compropago-oc-2-0-3.zip
+[oc-zip-2.1.0]: https://github.com/compropago/plugin-opencart/releases
+

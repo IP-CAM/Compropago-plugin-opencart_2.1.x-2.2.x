@@ -16,7 +16,7 @@
 */
 
 /**
-* Rest Implementation 
+* Rest Implementation
 * @since 1.0.1
 * @author Rolando Lucio <rolando@compropago.com>
 * @version 1.0.1
@@ -32,54 +32,54 @@ use Compropago\Sdk\Exception;
 
 class Rest
 {
-	
-/**
- * Base Rest Request
- * @param Compropago\Client $client
- * @param string $service
- * @param string $query
- * @param string $method
- * @returns Array
- * @throws Compropago\Exception
- * @since 1.0.1
- * @version 1.0.1
- */
-	public static function doExecute(Client $client,$service=null,$query=FALSE,$method='GET') 
+
+	/**
+	 * Base Rest Request
+	 * @param Compropago\Client $client
+	 * @param string $service
+	 * @param string $query
+	 * @param string $method
+	 * @return array
+	 * @throws Compropago\Exception
+	 * @since 1.0.1
+	 * @version 1.0.1
+	 */
+	public static function doExecute(Client $client,$service=null,$query=FALSE,$method='GET')
 	{
 		if(!isset($client)){
 			throw new Exception('Client Required');
 		}
-		
-		$request= $client->getHttp();
+
+		$request = $client->getHttp();
 		switch ($method){
-			
+
 			case 'GET':
 			case 'POST':
 				//supp rest methods
 				$request->setRequestMethod($method);
 			break;
 			default:
-			//no more in rest 
+			//no more in rest
 			throw new Exception('Rest Method not supported');
 		}
 
 		$request->setServiceUrl($service);
-		
-		
+
+
 		if($query && ($method=='POST' || $method=='GET')){
 			//just post data, throw con query en GET?
 			$request->setData($query);
 		}
-		
+
 		$request->setMethodOptions($method);
 		//$request->setOptions($addopts);
-		
+
 		$curl= new Curl();
-		
-		
+
+
 		$response = $curl->executeRequest($request);
-		
-		
+
+
 		return $response;
 	}
 }

@@ -28,17 +28,16 @@ use Compropago\Sdk\Http\Request;
 
 class Client
 {
-	
 	const VERSION="1.1.0";
 	const API_LIVE_URI='https://api.compropago.com/v1/';
 	const API_SANDBOX_URI='https://api.compropago.com/v1/';
-	
+
 	const USER_AGENT_SUFFIX = "compropago-php-sdk/";
 	/**
 	 * @since 1.0.1
 	 * @var string deployUri
 	 */
-	private $deployUri;	
+	private $deployUri;
 	/**
 	 * @since 1.0.1
 	 * @var boolean deployMode
@@ -48,14 +47,13 @@ class Client
 	 * @since 1.0.1
 	 * @var array auth
 	 */
-	private $auth;	
+	private $auth;
 	/**
 	 * @since 1.0.1
 	 * @var Compropago\Request $http
 	 */
 	private $http;
-	
-	
+
 	/**
 	 * Compropago Client Constructor
 	 * @param array $params
@@ -71,10 +69,9 @@ class Client
 			$error= "Se requieren las llaves del API de Compropago";
 			throw new Exception($error);
 		}else{
-			$this->auth=array($params['privatekey'],$params['publickey']); 
-				
-			
-		//Modo Activo o Pruebas 
+			$this->auth=array($params['privatekey'],$params['publickey']);
+
+			//Modo Activo o Pruebas
 			if($params['live']==true){
 				$this->deployUri=self::API_LIVE_URI;
 				$this->deployMode=true;
@@ -82,8 +79,8 @@ class Client
 				$this->deployUri=self::API_SANDBOX_URI;
 				$this->deployMode=false;
 			}
-			
-			
+
+
 			if(isset($params['contained']) && !empty($params['contained']) ){
 				$extra=$params['contained'];
 			}else {
@@ -93,11 +90,10 @@ class Client
 			$http->setUserAgent(self::USER_AGENT_SUFFIX, $this->getVersion(),$extra);
 			$http->setAuth($this->auth);
 			$this->http=$http;
-			
 		}
-			
 	}
-	
+
+
 	/**
 	 * Get deploy mode
 	 * @return bool
@@ -107,17 +103,19 @@ class Client
 	{
 		return $this->deployMode;
 	}
-	
-	
+
+
 	/**
 	 * Get current version
-	 * @return string 
+	 * @return string
 	 * @since 1.0.1
 	 */
 	public function getVersion()
 	{
-		return self::VERSION;	
+		return self::VERSION;
 	}
+
+
 	/**
 	 * Get Request Object
 	 * @return Compropago\Http\Request
@@ -127,8 +125,4 @@ class Client
 	{
 		return $this->http;
 	}
-	
-	
-	
-	
-}	
+}
