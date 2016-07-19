@@ -41,5 +41,52 @@
             "pagos internet",
             "payment gateway"
         ]
+    },
+    {
+        "name": "compropago/views-sdk",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/danteay/compropago-views-sdk.git",
+            "reference": "f8d3cc3b8019ebd11ffc440dcf5a80ba0645aadd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/danteay/compropago-views-sdk/zipball/f8d3cc3b8019ebd11ffc440dcf5a80ba0645aadd",
+            "reference": "f8d3cc3b8019ebd11ffc440dcf5a80ba0645aadd",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5"
+        },
+        "suggest": {
+            "compropago/php-sdk": ">=1.1"
+        },
+        "time": "2016-05-30 21:31:55",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "CompropagoViews\\": "Views"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apahce-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Arthur",
+                "email": "dante.aguilar41@gmail.com"
+            }
+        ],
+        "homepage": "https://github.com/danteay/compropago-views-sdk",
+        "keywords": [
+            "compropago",
+            "php",
+            "smarty",
+            "views"
+        ]
     }
 ]

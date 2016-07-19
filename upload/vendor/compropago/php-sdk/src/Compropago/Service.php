@@ -31,7 +31,7 @@ class Service{
 	 * @var Compropago\Client client
 	 */
 	private $client;
-	
+
 	/**
 	 * @param Compropago\Client $client
 	 * @since 1.0.1
@@ -48,27 +48,27 @@ class Service{
 	 */
 	public function evalAuth()
 	{
-		
+
 		$response=Rest::doExecute($this->client,'users/auth');
-		
+
 		//Error Mng Imp Test
 		$httpCode=$response['responseCode'];
 		switch ($httpCode){
 			case '401':
 				return false;
 			break;
-					
+
 			case '200':
 				return json_decode($response['responseBody']);
 			break;
-				
+
 			default:
 				$error= 'ComproPago Unexpected http code error';
 				throw new Exception($error, $httpCode);
-				return;	
-		}	
+				return;
+		}
 	}
-	
+
 	/**
 	 * Get where to pay providers
 	 * @return json
@@ -77,10 +77,10 @@ class Service{
 	public function getProviders()
 	{
 		$response=Rest::doExecute($this->client,'providers/true');
-		$jsonObj= json_decode($response['responseBody']);	
-		usort($jsonObj, function($a, $b) { 
-			return $a->rank > $b->rank ? 1 : -1; 
-		});	
+		$jsonObj= json_decode($response['responseBody']);
+		usort($jsonObj, function($a, $b) {
+			return $a->rank > $b->rank ? 1 : -1;
+		});
 		return $jsonObj;
 	}
 	/**
@@ -93,12 +93,12 @@ class Service{
 	{
 		$response=Rest::doExecute($this->client,'charges/'.$orderId);
 		$jsonObj= json_decode($response['responseBody']);
-		
+
 
 		//normalize to latest api version structure if charge response
 		if($jsonObj->api_version=='1.0' &&  isset($jsonObj->data->object->id) &&  !empty($jsonObj->data->object->id))
 			$jsonObj= Utils::normalizeResponse($jsonObj);
-		
+
 		return $jsonObj;
 	}
 	/**
@@ -110,12 +110,12 @@ class Service{
 	{
 		$response=Rest::doExecute($this->client,'charges/',$params,'POST');
 		$jsonObj= json_decode($response['responseBody']);
-		
+
 		//normalize to latest api version structure if charge was created
 		if($jsonObj->api_version=='1.0' && $jsonObj->payment_status=='PENDING')
 			$jsonObj= Utils::normalizeResponse($jsonObj);
-		
-		return $jsonObj;	
+
+		return $jsonObj;
 	}
-	
+
 }

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b5f615c9b24621766b086511b35e8cdd",
-    "content-hash": "824c320bcdd0073408a9fc661611a877",
+    "hash": "1fc117a97303fafbe929edd0d08c0fe3",
+    "content-hash": "89242dcfd78b120d6d4169b14d4ecf73",
     "packages": [
         {
             "name": "compropago/php-sdk",
@@ -47,6 +47,51 @@
                 "payment gateway"
             ],
             "time": "2016-02-15 16:07:14"
+        },
+        {
+            "name": "compropago/views-sdk",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/danteay/compropago-views-sdk.git",
+                "reference": "f8d3cc3b8019ebd11ffc440dcf5a80ba0645aadd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/danteay/compropago-views-sdk/zipball/f8d3cc3b8019ebd11ffc440dcf5a80ba0645aadd",
+                "reference": "f8d3cc3b8019ebd11ffc440dcf5a80ba0645aadd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "suggest": {
+                "compropago/php-sdk": ">=1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CompropagoViews\\": "Views"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apahce-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Arthur",
+                    "email": "dante.aguilar41@gmail.com"
+                }
+            ],
+            "homepage": "https://github.com/danteay/compropago-views-sdk",
+            "keywords": [
+                "compropago",
+                "php",
+                "smarty",
+                "views"
+            ],
+            "time": "2016-05-30 21:31:55"
         }
     ],
     "packages-dev": [],
