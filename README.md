@@ -1,12 +1,9 @@
-> ## Si llego buscando el archivo de instalación para su tienda [Descargue la última versión dando click Aquí] [compropago-3-0-x]
-
-
 # Plugin para OpenCart 2.2.x
 
 ## Descripción
 Este modulo provee el servicio de ComproPago para poder generar intenciones de pago dentro de la plataforma Opencart.
 
-Con ComproPago puede recibir pagos en OXXO, 7Eleven y muchas tiendas más en todo México.
+Con ComproPago puede recibir pagos en 7Eleven, Extra y muchas tiendas más en todo México.
 
 [Registrarse en ComproPago ](https://compropago.com)
 
