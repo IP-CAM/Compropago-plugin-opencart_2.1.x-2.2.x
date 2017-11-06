@@ -12,4 +12,5 @@ $_['text_card_number'] = 'El número de cuenta/tarjeta asignado es único por ca
 
 
 $_['entry_payment_type'] = 'Pagaré en:';
+$_['text_loading'] = 'Enviando';
 $_['button_confirm'] = 'Confirm Order';
