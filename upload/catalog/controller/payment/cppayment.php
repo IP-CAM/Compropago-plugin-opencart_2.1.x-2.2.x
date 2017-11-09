@@ -36,7 +36,9 @@ class ControllerPaymentCppayment extends Controller {
     $this->addData($data);
     $this->addConfig($data, $client);
 
-    return $this->load->view('default/template/payment/cp_providers.tpl', $data);
+    $uri = ( defined('VERSION') && ( version_compare( VERSION, '2.2.0.0' ,'>=' ) && version_compare( VERSION, '2.3.0.0' ,'<' ) ) ) ? 'payment/cp_providers' : 'default/template/payment/cp_providers.tpl';
+    
+    return $this->load->view( $uri , $data);
   }
 
   /**
