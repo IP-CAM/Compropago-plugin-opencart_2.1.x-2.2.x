@@ -37,7 +37,7 @@ class ControllerPaymentCppayment extends Controller {
 			try {
 				$uri = explode("admin/index.php",$_SERVER["REQUEST_URI"]);
 				$uri = $uri[0];
-				$webhook_url = $_SERVER['SERVER_NAME'] . $uri . "index.php?route=payment/cppayment/webhook";
+				$webhook_url = $this->site_url() . $uri . "index.php?route=payment/cppayment/webhook";
 
 				$client = new Client($this->public_key, $this->private_key, $this->mode);
 				$client->api->createWebhook($webhook_url);
@@ -60,6 +60,19 @@ class ControllerPaymentCppayment extends Controller {
 		$this->addSections($data);
 
 		$this->response->setOutput($this->load->view($this->config_view, $data));
+	}
+
+	/**
+	 * Return main site URL
+	 * 
+	 * @return string
+	 * 
+	 * @author Eduardo Aguilar <dante.aguilar41@gmail.com>
+	 */
+	private function site_url() {
+			$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+			$domainName = $_SERVER['HTTP_HOST'];
+			return $protocol.$domainName;
 	}
 
 	/**
