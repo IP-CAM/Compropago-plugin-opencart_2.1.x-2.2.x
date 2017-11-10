@@ -4,7 +4,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h1>Orden generáda!</h1>
+      <h1>Orden de compra generada.</h1>
       <hr>
 
       <div class="compropagoDivFrame" id="compropagodContainer" style="width: 100%;">
