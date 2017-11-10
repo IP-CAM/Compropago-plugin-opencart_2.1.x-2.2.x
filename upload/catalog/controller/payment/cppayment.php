@@ -153,7 +153,9 @@ class ControllerPaymentCppayment extends Controller {
     $this->addBreadcrums($data);
     $this->addData($data);
 
-    $this->response->setOutput($this->load->view('default/template/payment/cp_receipt.tpl', $data));
+    $uri = ( defined('VERSION') && ( version_compare( VERSION, '2.2.0.0' ,'>=' ) && version_compare( VERSION, '2.3.0.0' ,'<' ) ) ) ? 'payment/cp_receipt' : 'default/template/payment/cp_receipt.tpl';
+
+    $this->response->setOutput($this->load->view($uri, $data));
   }
 
   public function webhook(){
