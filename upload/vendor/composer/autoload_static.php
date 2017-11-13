@@ -4,41 +4,27 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit32038407abfe528ccc64e2f820a909e2
+class ComposerStaticInitf89782ff5291361bcfbac7dfe3646f0f
 {
     public static $prefixLengthsPsr4 = array (
         'C' => 
         array (
-            'Compropago\\Sdk\\' => 15,
+            'CompropagoSdk\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Compropago\\Sdk\\' => 
+        'CompropagoSdk\\' => 
         array (
-            0 => __DIR__ . '/..' . '/compropago/php-sdk/src',
+            0 => __DIR__ . '/..' . '/compropago/php-sdk/CompropagoSdk',
         ),
-    );
-
-    public static $classMap = array (
-        'Compropago\\Sdk\\Client' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Client.php',
-        'Compropago\\Sdk\\Controllers\\Views' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Controllers/Views.php',
-        'Compropago\\Sdk\\Exception' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Exception.php',
-        'Compropago\\Sdk\\Http\\Curl' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Http/Curl.php',
-        'Compropago\\Sdk\\Http\\Request' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Http/Request.php',
-        'Compropago\\Sdk\\Http\\Rest' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Http/Rest.php',
-        'Compropago\\Sdk\\Models\\DataBase' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Models/DataBase.php',
-        'Compropago\\Sdk\\Service' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Service.php',
-        'Compropago\\Sdk\\Utils\\Store' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Utils/Store.php',
-        'Compropago\\Sdk\\Utils\\Utils' => __DIR__ . '/..' . '/compropago/php-sdk/src/Compropago/Utils/Utils.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit32038407abfe528ccc64e2f820a909e2::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit32038407abfe528ccc64e2f820a909e2::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit32038407abfe528ccc64e2f820a909e2::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf89782ff5291361bcfbac7dfe3646f0f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf89782ff5291361bcfbac7dfe3646f0f::$prefixDirsPsr4;
 
         }, null, ClassLoader::class);
     }

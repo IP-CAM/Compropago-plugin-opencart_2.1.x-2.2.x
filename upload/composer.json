@@ -1,6 +1,0 @@
-{
-  "require": {
-    "compropago/php-sdk": "^1.0",
-    "compropago/views-sdk": "^1.0"
-  }
-}
