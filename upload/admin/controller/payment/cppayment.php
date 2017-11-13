@@ -147,6 +147,7 @@ class ControllerPaymentCppayment extends Controller {
 	 * @author Eduardo Aguilar <dante.aguilar41@gmail.com>  
 	 */
 	private function addWarnings(&$data) {
+		$data['error_warning'] = '';		
 		$retro = $this->hookRetro(
 			$this->config->get('cppayment_public_key'),
 			$this->config->get('cppayment_private_key'),
