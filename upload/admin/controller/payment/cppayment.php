@@ -106,11 +106,9 @@ class ControllerPaymentCppayment extends Controller {
 		$data['public_key'] = $this->config->get('cppayment_public_key');
 		$data['private_key'] = $this->config->get('cppayment_private_key');
 		$data['mode'] = $this->config->get('cppayment_mode');
-		$data['show_logos'] = $this->config->get('cppayment_show_logos');
 		$data['status'] = $this->config->get('cppayment_status');
 		
-		$data['sort_order'] = empty($this->config->get('cppayment_sort_order')) ? 
-			1 : $this->config->get('cppayment_sort_order');
+		$data['sort_order'] = empty($this->config->get('cppayment_sort_order')) ? 1 : $this->config->get('cppayment_sort_order');
 		
 		$providers = $this->config->get('cppayment_providers');
 

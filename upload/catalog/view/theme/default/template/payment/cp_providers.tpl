@@ -2,39 +2,28 @@
 
 <form class="form-horizontal" >
   <fieldset id="payment">
-    <div class="row">
-      <div class="col-sm-12">
-        <h3>Proveedores Disponibles</h3>
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-sm-12">
-        Seleccione el proveedor en el cual desea realizar su pago.
-        <hr>
+         <h4 style="color:#000">¿Dónde quieres pagar?<sup>*</sup></h4>
       </div>
     </div>
     
     <div class="row">
-      <div class="col-sm-12 cpprovider-select">
-        <?php if ($show_logos) { ?>
-          <ul>
-            <?php foreach ($providers as $provider) { ?>
-              <li>
-                <input type="radio" id="compropago_<?php echo $provider->internal_name; ?>" name="cp_provider" value="<?php echo $provider->internal_name; ?>">
-                <label for="compropago_<?php echo $provider->internal_name; ?>">
-                  <img src="<?php echo $provider->image_medium; ?>" alt="compropago_<?php echo $provider->internal_name; ?>">
-                </label>
-              </li>
-            <?php } ?>
-          </ul>
-        <?php } else { ?>
-          <select name="cp_provider" title="Proveedores" class="form-control">
+      <div class="col-sm-12 cpprovider-select" id="cppayment_store">
+          <select name="cp_provider" title="Proveedores" class="providers_list">
             <?php foreach ($providers as $provider){ ?>
               <option value="<?php echo $provider->internal_name; ?>"> <?php echo $provider->name; ?> </option>
             <?php } ?>
           </select>
-        <?php } ?>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="cppayment_text">
+        <br>
+        <p><sup>*</sup>Comisionistas <a href="https://compropago.com/legal/corresponsales_cnbv.pdf" target="_blank">autorizados por la CNBV</a> como corresponsales bancarios.</p>
+        </div>
       </div>
     </div>
 
@@ -47,6 +36,7 @@
         </div>
       </div>
     </div>
+    
   </fieldset>
 </form>
 

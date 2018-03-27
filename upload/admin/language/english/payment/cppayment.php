@@ -8,7 +8,7 @@ $_['heading_title']	 = 'ComproPago Payment Gateway';
 // Text
 $_['text_payment']	 = 'Payment';
 $_['text_success']	 = 'Success: You have modified ComproPago payment module!';
-$_['text_edit']      = 'Edit ComproPagp Payment Gateway';
+$_['text_edit']      = 'Edit ComproPago Payment Gateway';
 $_['text_cppayment'] = '<a href="http://www.compropago.com/documentacion/plugins" target="_blank"><img src="view/image/payment/cppayment.png" alt="ComproPago" title="ComproPago" style="border: 1px solid #EEEEEE;" /></a>';
 
 $_['button_save']    = 'Save';
