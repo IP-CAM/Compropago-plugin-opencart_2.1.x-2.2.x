@@ -32,12 +32,16 @@ class ControllerPaymentCppayment extends Controller {
 			$this->private_key = $this->request->post['cppayment_private_key'];
 			$this->mode = $this->request->post['cppayment_mode'] == '1' ? true : false;
 
-			$retro = $this->hookRetro($this->public_key, $this->private_key, $this->mode);
+			$retro = $this->hookRetro(
+				$this->public_key,
+				$this->private_key,
+				$this->mode
+			);
 
 			try {
-				$uri = explode("admin/index.php",$_SERVER["REQUEST_URI"]);
+				$uri = explode("admin/index.php", $_SERVER["REQUEST_URI"]);
 				$uri = $uri[0];
-				$webhook_url = $this->site_url() . $uri . "index.php?route=payment/cppayment/webhook";
+				$webhook_url = $this->site_url() . "{$uri}index.php?route=payment/cppayment/webhook";
 
 				$client = new Client($this->public_key, $this->private_key, $this->mode);
 				$client->api->createWebhook($webhook_url);

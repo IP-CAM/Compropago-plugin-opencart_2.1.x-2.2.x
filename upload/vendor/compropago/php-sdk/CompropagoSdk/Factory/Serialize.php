@@ -42,23 +42,23 @@ class Serialize
         } else {
             $obj = new CpOrderInfo();
 
-            $obj->id = $data['id'];
-            $obj->short_id = $data['short_id'];
-            $obj->type = $data['type'];
-            $obj->object = $data['object'];
-            $obj->livemode = $data['livemode'];
-            $obj->created_at = $data['created_at'];
-            $obj->accepted_at = $data['accepted_at'];
-            $obj->expires_at = $data['expires_at'];
-            $obj->paid = $data['paid'];
-            $obj->amount = $data['amount'];
-            $obj->currency = $data['currency'];
-            $obj->refunded = $data['refunded'];
-            $obj->fee = $data['fee'];
-            $obj->fee_details = self::feeDetails($data['fee_details']);
-            $obj->order_info = self::orderInfo($data['order_info']);
-            $obj->customer = self::customer($data['customer']);
-            $obj->api_version = $data['api_version'];
+            $obj->id            = $data['id'];
+            $obj->short_id      = $data['short_id'];
+            $obj->type          = $data['type'];
+            $obj->object        = $data['object'];
+            $obj->livemode      = $data['livemode'];
+            $obj->created_at    = $data['created_at'];
+            $obj->accepted_at   = $data['accepted_at'];
+            $obj->expires_at    = $data['expires_at'];
+            $obj->paid          = $data['paid'];
+            $obj->amount        = $data['amount'];
+            $obj->currency      = $data['currency'];
+            $obj->refunded      = $data['refunded'];
+            $obj->fee           = $data['fee'];
+            $obj->fee_details   = self::feeDetails($data['fee_details']);
+            $obj->order_info    = self::orderInfo($data['order_info']);
+            $obj->customer      = self::customer($data['customer']);
+            $obj->api_version   = $data['api_version'];
 
             return $obj;
         }
@@ -102,11 +102,11 @@ class Serialize
         } else {
             $obj = new EvalAuthInfo();
 
-            $obj->type = $data['type'];
-            $obj->livemode = $data['livemode'];
-            $obj->mode_key = $data['mode_key'];
-            $obj->message = $data['message'];
-            $obj->code = $data['code'];
+            $obj->type      = $data['type'];
+            $obj->livemode  = $data['livemode'];
+            $obj->mode_key  = $data['mode_key'];
+            $obj->message   = $data['message'];
+            $obj->code      = $data['code'];
 
             return $obj;
         }
@@ -127,12 +127,12 @@ class Serialize
         } else {
             $obj = new FeeDetails();
 
-            $obj->amount = isset($data['amount']) ? $data['amount'] : null;
-            $obj->currency = isset($data['currency']) ? $data['currency'] : null;
-            $obj->type = isset($data['type']) ? $data['type'] : null;
-            $obj->application = isset($data['application']) ? $data['application'] : null;
-            $obj->amount_refunded = isset($data['amount_refunded']) ? $data['amount_refunded'] : null;
-            $obj->tax = isset($data['tax']) ? $data['tax'] : null;
+            $obj->amount            = isset($data['amount']) ? $data['amount'] : null;
+            $obj->currency          = isset($data['currency']) ? $data['currency'] : null;
+            $obj->type              = isset($data['type']) ? $data['type'] : null;
+            $obj->application       = isset($data['application']) ? $data['application'] : null;
+            $obj->amount_refunded   = isset($data['amount_refunded']) ? $data['amount_refunded'] : null;
+            $obj->tax               = isset($data['tax']) ? $data['tax'] : null;
 
             return $obj;
         }
@@ -153,18 +153,18 @@ class Serialize
         } else {
             $obj = new InstructionDetails();
 
-            $obj->amount = $data['amount'];
-            $obj->store = $data['store'];
-            $obj->payment_amount = $data['payment_amount'];
-            $obj->payment_store = $data['payment_store'];
-            $obj->bank_account_holder_name = $data['bank_account_holder_name'];
-            $obj->bank_account_number = $data['bank_account_number'];
-            $obj->bank_reference = $data['bank_reference'];
-            $obj->company_reference_name = $data['company_reference_name'];
-            $obj->company_reference_number = $data['company_reference_number'];
-            $obj->company_bank_number = $data['company_bank_number'];
-            $obj->order_reference_number = $data['order_reference_number'];
-            $obj->bank_name = $data['bank_name'];
+            $obj->amount                    = $data['amount'];
+            $obj->store                     = $data['store'];
+            $obj->payment_amount            = $data['payment_amount'];
+            $obj->payment_store             = $data['payment_store'];
+            $obj->bank_account_holder_name  = $data['bank_account_holder_name'];
+            $obj->bank_account_number       = $data['bank_account_number'];
+            $obj->bank_reference            = $data['bank_reference'];
+            $obj->company_reference_name    = $data['company_reference_name'];
+            $obj->company_reference_number  = $data['company_reference_number'];
+            $obj->company_bank_number       = $data['company_bank_number'];
+            $obj->order_reference_number    = $data['order_reference_number'];
+            $obj->bank_name                 = $data['bank_name'];
 
             return $obj;
         }
