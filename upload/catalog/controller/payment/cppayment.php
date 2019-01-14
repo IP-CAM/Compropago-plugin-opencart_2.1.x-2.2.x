@@ -78,6 +78,7 @@ class ControllerPaymentCppayment extends Controller {
       'order_price'         => (float) $order_info['total'],
       'customer_name'       => $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'],
       'customer_email'      => $order_info['email'],
+      'customer_phone'      => '',
       'currency'            => $order_info['currency_code'],
       'payment_type'        => $this->request->post['payment_type'],
       'app_client_name'     => 'opencart',
