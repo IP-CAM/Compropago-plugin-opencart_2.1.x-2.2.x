@@ -31,7 +31,7 @@
       <div class="col-sm-12">
         <div class="buttons">
           <div class="pull-right">
-            <a href="#" id="button-confirm" class="btn btn-primary">Confirm order</a>
+            <a href="#" id="button-confirm" class="btn btn-primary">Confirmar orden</a>
           </div>
         </div>
       </div>
@@ -39,8 +39,6 @@
     
   </fieldset>
 </form>
-
-
 
 <script>
 var providers = document.querySelectorAll(".cpprovider-select ul li label img");

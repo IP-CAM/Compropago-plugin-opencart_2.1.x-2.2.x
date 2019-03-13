@@ -1,0 +1,32 @@
+{
+    "name": "compropago/opencart2.1.x",
+    "description": "An extension for OpenCart 2.1.x; ComproPago Cash and SPEI payments gateways",
+    "homepage": "https://www.compropago.com",
+    "license": "Apache-2.0",
+    "readme": "README.md",
+    "type": "opencart-extension",
+    "version": "2.0.1",
+    "keywords": [
+        "pagos internet",
+        "payment gateway",
+        "whmcs",
+        "compropago",
+        "cash",
+        "spei"
+    ],
+    "config": {
+        "optimize-autoloader": true,
+        "vendor-dir": "upload/vendor/"
+    },
+    "require": {
+        "compropago/php-sdk": "4"
+    },
+    "scripts": {
+        "build": "./build.sh"
+    },
+    "support": {
+        "email": "soporte@compropago.com",
+        "issues": "https://github.com/compropago/plugin-opencart_2.1.x-2.2.x/issues",
+        "source": "https://github.com/compropago/plugin-opencart_2.1.x-2.2.x.git"
+    }
+}

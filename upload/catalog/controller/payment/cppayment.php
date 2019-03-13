@@ -64,16 +64,25 @@ class ControllerPaymentCppayment extends Controller {
       $order_name .= $product['name'];
     }
 
+    # Cut order_name
+    $max_length = 250;
+    if (strlen($order_name) > $max_length)
+    {
+      $offset = ($max_length - 3) - strlen($order_name);
+      $order_name = substr($order_name, 0, strrpos($order_name, ' ', $offset)) . '...';
+    }
+
     $data_order = [
-      'order_id' => $order_id,
-      'order_name' => $order_name,
-      'order_price' => (float) $order_info['total'],
-      'customer_name' => $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'],
-      'customer_email' => $order_info['email'],
-      'currency' => $order_info['currency_code'],
-      'payment_type' => $this->request->post['payment_type'],
-      'app_client_name' => 'opencart',
-      'app_client_version' => VERSION
+      'order_id'            => $order_id,
+      'order_name'          => $order_name,
+      'order_price'         => (float) $order_info['total'],
+      'customer_name'       => $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'],
+      'customer_email'      => $order_info['email'],
+      'customer_phone'      => '',
+      'currency'            => $order_info['currency_code'],
+      'payment_type'        => $this->request->post['payment_type'],
+      'app_client_name'     => 'opencart',
+      'app_client_version'  => VERSION
     ];
 
     try {
