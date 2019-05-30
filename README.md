@@ -1,5 +1,4 @@
-# Plugin para OpenCart (2.1.0.1 - 2.2.0.0) 
-=================================================
+# Plugin para OpenCart (2.1.0.1 - 2.2.0.0)
 
 *Nota.-Este plugin sólo funcionará con cuentas de ComproPago generadas a partir de Agosto del 2017. Si tienes una cuenta creada anterior a esta fecha por favor utilizar la versión 2.1.1 del plugin.**
 
@@ -27,7 +26,7 @@ Con ComproPago puede recibir pagos en OXXO, 7Eleven y muchas tiendas más en tod
 
 ## Instalación
 
-Por favor revisar la siguiente [documentación](http://demo.compropago.com/list/plugins/opencart.php)
+Por favor revisar la siguiente [documentación](http://demo.compropago.com/plugins/opencart-3)
 
 ## Documentación
 
